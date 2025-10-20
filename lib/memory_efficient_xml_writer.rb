@@ -100,6 +100,39 @@ class MemoryEfficientXMLWriter
   end
 end
 
+# Enhanced version for very large datasets with batch processing
+class BatchXMLWriter < MemoryEfficientXMLWriter
+  def initialize(file_path, root_element_name = 'data', batch_size = 1000)
+    super(file_path, root_element_name)
+    @batch_size = batch_size
+    @current_batch = []
+  end
+
+  def add_to_batch(hash, element_name = 'item')
+    @current_batch << { hash: hash, element_name: element_name }
+
+    if @current_batch.size >= @batch_size
+      flush_batch
+    end
+  end
+
+  def flush_batch
+    return if @current_batch.empty?
+
+    @current_batch.each do |item|
+      write_hash(item[:hash], item[:element_name])
+    end
+
+    @current_batch.clear
+    GC.start # Force garbage collection to free memory
+  end
+
+  def finish_writing
+    flush_batch # Write any remaining items
+    super
+  end
+end
+
 # Alternative streaming approach using REXML (slightly more memory but cleaner XML)
 class REXMLStreamingWriter
   def initialize(file_path, root_element_name = 'data')
