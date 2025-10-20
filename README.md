@@ -346,16 +346,6 @@ Memory efficiency:    767.5:1 ratio
 📈 **See [BENCHMARK_RESULTS.md](BENCHMARK_RESULTS.md) for detailed performance analysis**  
 🆚 **See [STREAMING_VS_BULK.md](STREAMING_VS_BULK.md) for Streaming vs Bulk comparison**
 
-## 🎯 Use Cases
-
-1. **Database Exports**: Convert large database tables to XML
-2. **API Data Transformation**: Transform API responses to XML format
-3. **File Format Conversion**: CSV/JSON/JSONL to XML conversion
-4. **ETL Pipelines**: Part of data transformation workflows
-5. **Legacy System Integration**: Generate XML for older systems
-6. **Data Migration**: Transfer data between systems in XML format
-7. **Report Generation**: Create XML reports from application data
-
 ## 🛠️ Advanced Usage
 
 ### Complex Nested Structures
