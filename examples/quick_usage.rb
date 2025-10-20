@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/memory_efficient_xml_writer'
+require_relative '../lib/writers/memory_efficient_xml_writer'
+require 'time'
 
 # Ensure we're in the project root directory
 Dir.chdir(File.expand_path('..', __dir__))
@@ -24,7 +25,9 @@ user_data = [
 
 # Convert to XML - Memory efficient way
 writer = MemoryEfficientXMLWriter.new('output/users.xml', 'users')
-writer.write_complete_xml(user_data, 'user')
+writer.start_writing
+user_data.each { |user| writer.write_hash(user, 'user') }
+writer.finish_writing
 
 puts "✓ Created output/users.xml from array of #{user_data.length} hashes"
 
@@ -65,7 +68,7 @@ end
 
 # Memory-efficient processing
 writer = MemoryEfficientXMLWriter.new('output/large_users.xml', 'users')
-writer.start_document
+writer.start_writing
 
 total_processed = 0
 simulate_database_batches do |batch|
@@ -76,7 +79,7 @@ simulate_database_batches do |batch|
   puts "Processed #{total_processed} records..." if total_processed % 2000 == 0
 end
 
-writer.finish_document
+writer.finish_writing
 puts "✓ Created output/large_users.xml with #{total_processed} records"
 
 # ==============================================================================
@@ -129,21 +132,22 @@ complex_data = [
 ]
 
 writer = MemoryEfficientXMLWriter.new('output/complex_data.xml', 'customers')
-writer.write_complete_xml(complex_data, 'customer')
+writer.start_writing
+complex_data.each { |customer| writer.write_hash(customer, 'customer') }
+writer.finish_writing
 
 puts "✓ Created output/complex_data.xml with nested structures"
 
 # ==============================================================================
-# SCENARIO 4: Batch processing for optimal memory usage
+# SCENARIO 4: Processing huge datasets (50K+ records)
 # ==============================================================================
 
-puts "\nScenario 4: Batch processing for huge datasets"
+puts "\nScenario 4: Processing huge datasets efficiently"
 puts "-" * 50
 
-# Use batch writer for datasets that are too large for regular streaming
-# This automatically manages memory by writing in batches and calling GC
-batch_writer = BatchXMLWriter.new('output/huge_dataset.xml', 'records', batch_size: 1000)
-batch_writer.start_document
+# Streaming writer handles huge datasets with constant memory
+writer = MemoryEfficientXMLWriter.new('output/huge_dataset.xml', 'records')
+writer.start_writing
 
 # Simulate processing 50,000 records
 (1..50_000).each do |i|
@@ -154,13 +158,16 @@ batch_writer.start_document
     random_value: rand(1000)
   }
 
-  batch_writer.add_to_batch(record, 'record')
+  writer.write_hash(record, 'record')
 
-  puts "Batched #{i} records..." if i % 10_000 == 0
+  # Optional: Force GC periodically for very large datasets
+  GC.start if i % 5000 == 0
+
+  puts "Processed #{i} records..." if i % 10_000 == 0
 end
 
-batch_writer.finish_document
-puts "✓ Created output/huge_dataset.xml with 50,000 records using batch processing"
+writer.finish_writing
+puts "✓ Created output/huge_dataset.xml with 50,000 records using streaming"
 
 # ==============================================================================
 # SCENARIO 5: Custom element names and root elements
@@ -176,13 +183,13 @@ products = [
 
 # Custom root element name and item element names
 writer = MemoryEfficientXMLWriter.new('output/catalog.xml', 'product_catalog')
-writer.start_document
+writer.start_writing
 
 products.each do |product|
   writer.write_hash(product, 'product')
 end
 
-writer.finish_document
+writer.finish_writing
 puts "✓ Created output/catalog.xml with custom element names"
 
 # ==============================================================================

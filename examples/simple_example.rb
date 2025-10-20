@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # Simple example of using the memory-efficient XML writer
-require_relative '../lib/memory_efficient_xml_writer'
+require_relative '../lib/writers/memory_efficient_xml_writer'
 
 # Ensure we're in the project root directory
 Dir.chdir(File.expand_path('..', __dir__))
