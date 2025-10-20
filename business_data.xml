@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<companies>
+  <company>
+    <company_id>1</company_id>
+    <name>Acme Corp</name>
+    <address>
+      <street>123 Main St</street>
+      <city>Anytown</city>
+      <state>CA</state>
+      <zip>90210</zip>
+      <country>USA</country>
+    </address>
+    <employees>
+      <name>John Doe</name>
+      <position>CEO</position>
+      <salary>200000</salary>
+    </employees>
+    <employees>
+      <name>Jane Smith</name>
+      <position>CTO</position>
+      <salary>180000</salary>
+    </employees>
+    <financials>
+      <revenue>5000000</revenue>
+      <expenses>3500000</expenses>
+      <profit>1500000</profit>
+      <year>2023</year>
+    </financials>
+  </company>
+  <company>
+    <company_id>2</company_id>
+    <name>Tech Solutions Inc</name>
+    <address>
+      <street>456 Innovation Dr</street>
+      <city>Silicon Valley</city>
+      <state>CA</state>
+      <zip>94000</zip>
+      <country>USA</country>
+    </address>
+    <employees>
+      <name>Bob Johnson</name>
+      <position>Founder</position>
+      <salary>250000</salary>
+    </employees>
+    <employees>
+      <name>Alice Brown</name>
+      <position>Lead Developer</position>
+      <salary>150000</salary>
+    </employees>
+    <employees>
+      <name>Charlie Wilson</name>
+      <position>Designer</position>
+      <salary>120000</salary>
+    </employees>
+    <financials>
+      <revenue>2000000</revenue>
+      <expenses>1200000</expenses>
+      <profit>800000</profit>
+      <year>2023</year>
+    </financials>
+  </company>
+</companies>
