@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/simple_hash_to_xml'
+require_relative '../lib/memory_efficient_xml_writer'
 require 'csv'
 require 'json'
 
@@ -15,23 +15,16 @@ class PracticalXMLConverter
     puts "Converting CSV to XML: #{csv_file} -> #{xml_file}"
 
     xml_writer = MemoryEfficientXMLWriter.new(xml_file, 'records')
+    xml_writer.start_writing
 
-    # Create enumerator from CSV that processes one row at a time
-    csv_enumerator = Enumerator.new do |yielder|
-      CSV.foreach(csv_file, headers: headers) do |row|
-        # Convert CSV row to hash
-        if headers
-          yielder << row.to_h
-        else
-          # Create hash with column indices if no headers
-          hash = {}
-          row.each_with_index { |value, index| hash["column_#{index}"] = value }
-          yielder << hash
-        end
-      end
+    # Process CSV row by row
+    CSV.foreach(csv_file, headers: headers) do |row|
+      # Convert CSV row to hash
+      hash = headers ? row.to_h : row.each_with_index.to_h { |v, i| ["column_#{i}", v] }
+      xml_writer.write_hash(hash, 'record')
     end
 
-    xml_writer.write_hashes(csv_enumerator, 'record')
+    xml_writer.finish_writing
     puts "Conversion complete!"
   end
 
@@ -40,20 +33,19 @@ class PracticalXMLConverter
     puts "Converting JSONL to XML: #{jsonl_file} -> #{xml_file}"
 
     xml_writer = MemoryEfficientXMLWriter.new(xml_file, 'documents')
+    xml_writer.start_writing
 
-    # Create enumerator from JSONL file
-    jsonl_enumerator = Enumerator.new do |yielder|
-      File.foreach(jsonl_file) do |line|
-        begin
-          hash = JSON.parse(line.strip)
-          yielder << hash
-        rescue JSON::ParserError => e
-          puts "Warning: Skipping invalid JSON line: #{e.message}"
-        end
+    # Process JSONL file line by line
+    File.foreach(jsonl_file) do |line|
+      begin
+        hash = JSON.parse(line.strip)
+        xml_writer.write_hash(hash, 'document')
+      rescue JSON::ParserError => e
+        puts "Warning: Skipping invalid JSON line: #{e.message}"
       end
     end
 
-    xml_writer.write_hashes(jsonl_enumerator, 'document')
+    xml_writer.finish_writing
     puts "Conversion complete!"
   end
 
@@ -62,19 +54,18 @@ class PracticalXMLConverter
     puts "Simulating database export to XML: #{total_records} records"
 
     xml_writer = MemoryEfficientXMLWriter.new(xml_file, 'database_export')
+    xml_writer.start_writing
 
     # Simulate database cursor/batch processing
-    database_enumerator = Enumerator.new do |yielder|
-      (0...total_records).step(batch_size) do |offset|
-        # Simulate fetching a batch from database
-        batch = fetch_database_batch(offset, batch_size, total_records)
-        batch.each { |record| yielder << record }
+    (0...total_records).step(batch_size) do |offset|
+      # Simulate fetching a batch from database
+      batch = fetch_database_batch(offset, batch_size, total_records)
+      batch.each { |record| xml_writer.write_hash(record, 'record') }
 
-        puts "Processed batch: #{offset} - #{[offset + batch_size - 1, total_records - 1].min}"
-      end
+      puts "Processed batch: #{offset} - #{[offset + batch_size - 1, total_records - 1].min}"
     end
 
-    xml_writer.write_hashes(database_enumerator, 'record')
+    xml_writer.finish_writing
     puts "Database export complete!"
   end
 
@@ -83,19 +74,18 @@ class PracticalXMLConverter
     puts "Converting array to XML in chunks of #{chunk_size}"
 
     xml_writer = MemoryEfficientXMLWriter.new(xml_file, 'array_data')
+    xml_writer.start_writing
 
     # Process array in chunks to avoid memory issues
-    chunked_enumerator = Enumerator.new do |yielder|
-      array.each_slice(chunk_size) do |chunk|
-        chunk.each { |item| yielder << item }
+    array.each_slice(chunk_size) do |chunk|
+      chunk.each { |item| xml_writer.write_hash(item, 'item') }
 
-        # Optional: trigger garbage collection after each chunk
-        GC.start
-        puts "Processed chunk of #{chunk.size} items"
-      end
+      # Optional: trigger garbage collection after each chunk
+      GC.start
+      puts "Processed chunk of #{chunk.size} items"
     end
 
-    xml_writer.write_hashes(chunked_enumerator, 'item')
+    xml_writer.finish_writing
     puts "Array conversion complete!"
   end
 
