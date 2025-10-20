@@ -2,6 +2,7 @@
 
 require_relative '../lib/memory_efficient_xml_writer'
 require 'benchmark'
+require 'time'
 
 # Ensure we're in the project root directory
 Dir.chdir(File.expand_path('..', __dir__))
@@ -44,14 +45,14 @@ class XMLWriterBenchmark
 
     time = Benchmark.realtime do
       writer = MemoryEfficientXMLWriter.new("output/streaming_test_#{record_count}.xml", 'records')
-      writer.start_document
+      writer.start_writing
 
       (1..record_count).each do |i|
         record = generate_test_record(i)
         writer.write_hash(record, 'record')
       end
 
-      writer.finish_document
+      writer.finish_writing
     end
 
     memory_after = get_memory_usage
@@ -70,14 +71,14 @@ class XMLWriterBenchmark
 
     time = Benchmark.realtime do
       writer = BatchXMLWriter.new("output/batch_test_#{record_count}.xml", 'records', 1000)
-      writer.start_document
+      writer.start_writing
 
       (1..record_count).each do |i|
         record = generate_test_record(i)
         writer.add_to_batch(record, 'record')
       end
 
-      writer.finish_document
+      writer.finish_writing
     end
 
     memory_after = get_memory_usage
@@ -157,7 +158,7 @@ class MemoryUsageDemo
     puts "Initial memory: #{initial_memory.round(2)} MB"
 
     writer = BatchXMLWriter.new('output/memory_demo.xml', 'large_dataset', 500)
-    writer.start_document
+    writer.start_writing
 
     (1..25_000).each do |i|
       # Create a fairly complex record
@@ -200,7 +201,7 @@ class MemoryUsageDemo
       end
     end
 
-    writer.finish_document
+    writer.finish_writing
 
     final_memory = get_memory_usage
     file_size = File.size('output/memory_demo.xml')
