@@ -396,17 +396,6 @@ writer.finish_document
 - **Dependencies**: None required (uses built-in libraries)
 - **Optional**: `nokogiri` gem for XML validation in examples
 
-## 📄 License
-
-MIT License - Feel free to use in your projects
-
-## 🤝 Contributing
-
-Contributions are welcome! The codebase is organized for easy understanding:
-
-- `lib/` - Core functionality
-- `examples/` - Usage demonstrations
-- Each file is well-commented and self-contained
 
 ## 📚 Additional Resources
 
@@ -431,6 +420,3 @@ Contributions are welcome! The codebase is organized for easy understanding:
 5. **Optimize**: Use `examples/benchmark.rb` to test performance
 6. **Integrate**: Apply to your own project
 
----
-
-**Questions or Issues?** Check the examples directory for comprehensive demonstrations of all features.
