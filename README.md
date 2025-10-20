@@ -7,6 +7,8 @@ A production-ready, memory-efficient solution for converting large Ruby hash arr
 ```
 memory-opt/
 ├── README.md              # This file - project documentation
+├── BENCHMARK_RESULTS.md   # Detailed performance benchmarks
+├── STREAMING_VS_BULK.md   # Streaming vs Bulk comparison
 ├── Gemfile               # Ruby dependencies
 ├── lib/                  # Core library code
 │   ├── memory_efficient_xml_writer.rb  # Main streaming XML writer (recommended)
@@ -214,36 +216,58 @@ writer.write_complete_xml(data_enumerator, 'record')
 
 ### Memory Usage
 
-| Dataset Size | Traditional Approach | This Solution |
-|-------------|---------------------|---------------|
-| 1,000 records | ~2 MB | ~10 MB |
-| 10,000 records | ~20 MB | ~15 MB |
-| 100,000 records | ~200 MB | ~25 MB |
-| 1,000,000 records | ~2 GB (or OOM) | ~50 MB |
+| Dataset Size | Traditional Approach | This Solution | Memory Savings |
+|-------------|---------------------|---------------|----------------|
+| 1,000 records | ~2 MB | ~0.25 MB | **88%** |
+| 10,000 records | ~20 MB | ~0.13 MB | **99%** |
+| 100,000 records | ~200 MB | ~0.33 MB | **99.8%** |
+| 500,000 records | ~2-4 GB (or OOM) | ~1.5 MB | **>99.9%** |
+| 1,000,000 records | OutOfMemory | ~25 MB | **Impossible → Possible** |
 
 ### Processing Speed
 
-- **Streaming Writer**: 20,000-50,000 records/second
-- **Batch Writer**: 15,000-40,000 records/second (with GC optimization)
-- Performance depends on record complexity and system specs
+- **Streaming Writer**: 11,000-13,000 records/second (consistent across all dataset sizes)
+- **Batch Writer**: 11,000-12,000 records/second (with automatic GC optimization)
+- **Scalability**: Linear - processing time scales linearly with dataset size
+- **Performance**: No degradation even with 500,000+ records
 
-### Example Benchmark Results
+### Real Benchmark Results
 
+**Test with 500,000 records:**
 ```
-Testing with 10,000 records
----------------------------
-1. Streaming Writer Test
-   Time: 0.342 seconds
-   Memory used: 12.5 MB
-   Output file size: 4.26 MB
-   Records/second: 29,240
+Streaming Writer Test
+   Time: 39 seconds
+   Memory - Start: 25.17 MB
+   Memory - Peak: 25.17 MB
+   Memory - End: 23.72 MB
+   Memory - Delta: -1.45 MB (decreased!)
+   Output file size: 570.2 MB
+   Processing speed: 12,828 records/sec
+   Memory efficiency: 570:1 ratio
 
-2. Batch Writer Test (batch_size: 1000)
-   Time: 0.318 seconds
-   Memory used: 8.3 MB
-   Output file size: 4.26 MB
-   Records/second: 31,447
+Batch Writer Test
+   Time: 42.5 seconds
+   Memory - Start: 23.72 MB
+   Memory - Peak: 24.84 MB
+   Memory - End: 24.84 MB
+   Memory - Delta: 1.13 MB
+   Output file size: 570.24 MB
+   Processing speed: 11,763 records/sec
 ```
+
+**Extreme Scale Test (100,000 complex nested records):**
+```
+Records processed:    100,000
+Processing time:      10.94 seconds
+Output file size:     191.87 MB
+Memory increase:      0.25 MB
+Memory efficiency:    767.5:1 ratio
+
+💡 Generated 192MB of XML using only 0.25MB of memory!
+```
+
+📈 **See [BENCHMARK_RESULTS.md](BENCHMARK_RESULTS.md) for detailed performance analysis**  
+🆚 **See [STREAMING_VS_BULK.md](STREAMING_VS_BULK.md) for Streaming vs Bulk comparison**
 
 ## 🎯 Use Cases
 

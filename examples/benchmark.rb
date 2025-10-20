@@ -10,30 +10,51 @@ Dir.chdir(File.expand_path('..', __dir__))
 # Benchmark script to demonstrate memory efficiency and performance
 class XMLWriterBenchmark
   def initialize
-    @test_sizes = [1_000, 10_000, 50_000]
+    # Smaller sizes for bulk writer comparison (to avoid OOM)
+    @test_sizes = [1_000, 10_000, 50_000, 100_000]
   end
 
   def run_all_benchmarks
-    puts "XML Writer Performance Benchmark"
-    puts "=" * 50
+    puts "XML Writer Performance Benchmark with Large Datasets"
+    puts "=" * 70
     puts "Ruby Version: #{RUBY_VERSION}"
     puts "System: #{RUBY_PLATFORM}"
+    puts "Timestamp: #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
+    puts "=" * 70
     puts
 
-    @test_sizes.each do |size|
-      puts "\n" + "-" * 30
-      puts "Testing with #{size.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} records"
-      puts "-" * 30
+    results = []
 
-      benchmark_streaming_writer(size)
-      benchmark_batch_writer(size)
+    @test_sizes.each do |size|
+      puts "\n" + "=" * 70
+      puts "Testing with #{format_number(size)} records"
+      puts "=" * 70
+
+      streaming_result = benchmark_streaming_writer(size)
+      bulk_result = benchmark_bulk_writer(size)
+
+      results << {
+        size: size,
+        streaming: streaming_result,
+        bulk: bulk_result
+      }
 
       # Clean up files after each test
       cleanup_test_files
+
+      # Force GC between tests
+      GC.start
+      sleep 0.5 # Brief pause between large tests
     end
 
-    puts "\n" + "=" * 50
+    print_summary_table(results)
+
+    puts "\n" + "=" * 70
     puts "Benchmark completed!"
+  end
+
+  def format_number(num)
+    num.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
   end
 
   private
@@ -42,6 +63,11 @@ class XMLWriterBenchmark
     puts "\n1. Streaming Writer Test"
 
     memory_before = get_memory_usage
+    memory_peak = memory_before
+    memory_samples = []
+
+    # Sample memory every N records
+    sample_interval = [record_count / 10, 1000].max
 
     time = Benchmark.realtime do
       writer = MemoryEfficientXMLWriter.new("output/streaming_test_#{record_count}.xml", 'records')
@@ -50,44 +76,99 @@ class XMLWriterBenchmark
       (1..record_count).each do |i|
         record = generate_test_record(i)
         writer.write_hash(record, 'record')
+
+        # Sample memory usage
+        if i % sample_interval == 0
+          current_memory = get_memory_usage
+          memory_samples << current_memory
+          memory_peak = [memory_peak, current_memory].max
+          print "." if record_count > 50_000
+        end
       end
 
       writer.finish_writing
     end
 
     memory_after = get_memory_usage
+    memory_peak = [memory_peak, memory_after].max
     file_size = File.size("output/streaming_test_#{record_count}.xml")
 
-    puts "   Time: #{time.round(3)} seconds"
-    puts "   Memory used: #{(memory_after - memory_before).round(2)} MB"
-    puts "   Output file size: #{(file_size / 1024.0 / 1024.0).round(2)} MB"
-    puts "   Records/second: #{(record_count / time).round(0)}"
+    avg_memory = memory_samples.empty? ? memory_after : (memory_samples.sum / memory_samples.size)
+
+    puts "" if record_count > 50_000
+    puts "   Time: #{format_time(time)}"
+    puts "   Memory - Start: #{memory_before.round(2)} MB"
+    puts "   Memory - Peak: #{memory_peak.round(2)} MB"
+    puts "   Memory - End: #{memory_after.round(2)} MB"
+    puts "   Memory - Delta: #{(memory_after - memory_before).round(2)} MB"
+    puts "   Output file size: #{format_file_size(file_size)}"
+    puts "   Processing speed: #{format_number((record_count / time).round(0))} records/sec"
+
+    {
+      time: time,
+      memory_before: memory_before,
+      memory_after: memory_after,
+      memory_peak: memory_peak,
+      memory_delta: memory_after - memory_before,
+      file_size: file_size,
+      records_per_sec: (record_count / time).round(0)
+    }
   end
 
-  def benchmark_batch_writer(record_count)
-    puts "\n2. Batch Writer Test (batch_size: 1000)"
+  def benchmark_bulk_writer(record_count)
+    puts "\n2. Bulk Writer Test (Traditional - Loads All into Memory)"
 
     memory_before = get_memory_usage
+    memory_peak = memory_before
+    memory_samples = []
+
+    # Sample memory every N records
+    sample_interval = [record_count / 10, 1000].max
 
     time = Benchmark.realtime do
-      writer = BatchXMLWriter.new("output/batch_test_#{record_count}.xml", 'records', 1000)
+      writer = BulkXMLWriter.new("output/bulk_test_#{record_count}.xml", 'records')
       writer.start_writing
 
       (1..record_count).each do |i|
         record = generate_test_record(i)
-        writer.add_to_batch(record, 'record')
+        writer.write_hash(record, 'record')
+
+        # Sample memory usage
+        if i % sample_interval == 0
+          current_memory = get_memory_usage
+          memory_samples << current_memory
+          memory_peak = [memory_peak, current_memory].max
+          print "." if record_count > 50_000
+        end
       end
 
       writer.finish_writing
     end
 
     memory_after = get_memory_usage
-    file_size = File.size("output/batch_test_#{record_count}.xml")
+    memory_peak = [memory_peak, memory_after].max
+    file_size = File.size("output/bulk_test_#{record_count}.xml")
 
-    puts "   Time: #{time.round(3)} seconds"
-    puts "   Memory used: #{(memory_after - memory_before).round(2)} MB"
-    puts "   Output file size: #{(file_size / 1024.0 / 1024.0).round(2)} MB"
-    puts "   Records/second: #{(record_count / time).round(0)}"
+    avg_memory = memory_samples.empty? ? memory_after : (memory_samples.sum / memory_samples.size)
+
+    puts "" if record_count > 50_000
+    puts "   Time: #{format_time(time)}"
+    puts "   Memory - Start: #{memory_before.round(2)} MB"
+    puts "   Memory - Peak: #{memory_peak.round(2)} MB"
+    puts "   Memory - End: #{memory_after.round(2)} MB"
+    puts "   Memory - Delta: #{(memory_after - memory_before).round(2)} MB"
+    puts "   Output file size: #{format_file_size(file_size)}"
+    puts "   Processing speed: #{format_number((record_count / time).round(0))} records/sec"
+
+    {
+      time: time,
+      memory_before: memory_before,
+      memory_after: memory_after,
+      memory_peak: memory_peak,
+      memory_delta: memory_after - memory_before,
+      file_size: file_size,
+      records_per_sec: (record_count / time).round(0)
+    }
   end
 
   def generate_test_record(id)
@@ -141,26 +222,127 @@ class XMLWriterBenchmark
 
   def cleanup_test_files
     Dir.glob("output/*_test_*.xml").each { |file| File.delete(file) if File.exist?(file) }
+    Dir.glob("output/bulk_test_*.xml").each { |file| File.delete(file) if File.exist?(file) }
+  end
+
+  def format_time(seconds)
+    if seconds < 60
+      "#{seconds.round(3)} seconds"
+    else
+      minutes = (seconds / 60).floor
+      remaining_seconds = (seconds % 60).round(1)
+      "#{minutes}m #{remaining_seconds}s"
+    end
+  end
+
+  def format_file_size(bytes)
+    mb = bytes / 1024.0 / 1024.0
+    if mb < 1024
+      "#{mb.round(2)} MB"
+    else
+      gb = mb / 1024.0
+      "#{gb.round(2)} GB"
+    end
+  end
+
+  def print_summary_table(results)
+    puts "\n" + "=" * 70
+    puts "PERFORMANCE SUMMARY"
+    puts "=" * 70
+    puts
+    puts "Streaming Writer Performance:"
+    puts "-" * 70
+    printf("%-15s %-12s %-15s %-15s %-15s\n", "Records", "Time", "Memory Delta", "File Size", "Speed")
+    puts "-" * 70
+
+    results.each do |result|
+      printf("%-15s %-12s %-15s %-15s %-15s\n",
+        format_number(result[:size]),
+        format_time(result[:streaming][:time]),
+        "#{result[:streaming][:memory_delta].round(2)} MB",
+        format_file_size(result[:streaming][:file_size]),
+        "#{format_number(result[:streaming][:records_per_sec])} rec/s"
+      )
+    end
+
+    puts
+    puts "Bulk Writer Performance (Traditional - All in Memory):"
+    puts "-" * 70
+    printf("%-15s %-12s %-15s %-15s %-15s\n", "Records", "Time", "Memory Delta", "File Size", "Speed")
+    puts "-" * 70
+
+    results.each do |result|
+      printf("%-15s %-12s %-15s %-15s %-15s\n",
+        format_number(result[:size]),
+        format_time(result[:bulk][:time]),
+        "#{result[:bulk][:memory_delta].round(2)} MB",
+        format_file_size(result[:bulk][:file_size]),
+        "#{format_number(result[:bulk][:records_per_sec])} rec/s"
+      )
+    end
+
+    puts
+    puts "Memory Comparison:"
+    puts "-" * 70
+
+    # Calculate average memory increase
+    avg_streaming_memory = results.map { |r| r[:streaming][:memory_delta] }.sum / results.size
+    avg_bulk_memory = results.map { |r| r[:bulk][:memory_delta] }.sum / results.size
+
+    puts "• Average memory delta (Streaming): #{avg_streaming_memory.round(2)} MB"
+    puts "• Average memory delta (Bulk):      #{avg_bulk_memory.round(2)} MB"
+    puts "• Memory savings: #{((avg_bulk_memory - avg_streaming_memory) / avg_bulk_memory * 100).round(1)}%"
+    puts ""
+
+    # Show peak memory comparison for largest test
+    largest_test = results.last
+    streaming_peak = largest_test[:streaming][:memory_peak]
+    bulk_peak = largest_test[:bulk][:memory_peak]
+
+    puts "Peak Memory Usage for #{format_number(largest_test[:size])} records:"
+    puts "• Streaming Writer: #{streaming_peak.round(2)} MB"
+    puts "• Bulk Writer:      #{bulk_peak.round(2)} MB"
+    puts "• Difference:       #{(bulk_peak - streaming_peak).round(2)} MB"
+    puts "• Streaming uses #{((streaming_peak / bulk_peak) * 100).round(1)}% of Bulk's memory"
+    puts ""
+
+    max_records = results.last[:size]
+    max_file_size = results.last[:streaming][:file_size]
+    max_memory_delta = results.last[:streaming][:memory_delta]
+
+    puts "Final Test Results (#{format_number(max_records)} records):"
+    puts "• File size generated: #{format_file_size(max_file_size)}"
+    puts "• Streaming memory delta: #{max_memory_delta.round(2)} MB"
+    puts "• Bulk memory delta: #{largest_test[:bulk][:memory_delta].round(2)} MB"
+
+    if max_memory_delta.abs < 50
+      efficiency = ((max_file_size / 1024.0 / 1024.0) / [max_memory_delta.abs, 1].max).round(1)
+      puts "• Streaming efficiency: #{efficiency}:1 (file:memory ratio)"
+    end
   end
 end
 
 # Memory usage demonstration
 class MemoryUsageDemo
   def demonstrate_memory_efficiency
-    puts "\nMemory Usage Demonstration"
-    puts "=" * 30
+    puts "\n" + "=" * 70
+    puts "EXTREME SCALE MEMORY EFFICIENCY TEST"
+    puts "=" * 70
 
-    puts "\nGenerating 25,000 complex records..."
-    puts "This would typically consume several GB if done in-memory."
-    puts "Watch the memory usage stay minimal with streaming approach.\n"
+    test_size = 100_000
+    puts "\nGenerating #{test_size.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} complex records..."
+    puts "Traditional approach would consume 2-4 GB of memory."
+    puts "Watch how streaming keeps memory usage minimal!\n"
 
     initial_memory = get_memory_usage
     puts "Initial memory: #{initial_memory.round(2)} MB"
+    puts ""
 
     writer = BatchXMLWriter.new('output/memory_demo.xml', 'large_dataset', 500)
     writer.start_writing
 
-    (1..25_000).each do |i|
+    start_time = Time.now
+    (1..test_size).each do |i|
       # Create a fairly complex record
       complex_record = {
         id: i,
@@ -195,9 +377,11 @@ class MemoryUsageDemo
 
       writer.add_to_batch(complex_record, 'record')
 
-      if i % 2500 == 0
+      if i % 10_000 == 0
         current_memory = get_memory_usage
-        puts "Processed #{i.to_s.rjust(6)} records | Memory: #{current_memory.round(2)} MB | Δ: +#{(current_memory - initial_memory).round(2)} MB"
+        elapsed = Time.now - start_time
+        rate = (i / elapsed).round(0)
+        puts "Processed #{i.to_s.rjust(7)} records | Memory: #{current_memory.round(2)} MB | Δ: #{(current_memory - initial_memory).round(2).to_s.rjust(6)} MB | Rate: #{rate.to_s.rjust(6)} rec/s"
       end
     end
 
@@ -205,13 +389,29 @@ class MemoryUsageDemo
 
     final_memory = get_memory_usage
     file_size = File.size('output/memory_demo.xml')
+    total_time = Time.now - start_time
 
-    puts "\nFinal Results:"
-    puts "- Records processed: 25,000"
-    puts "- Final memory usage: #{final_memory.round(2)} MB"
-    puts "- Total memory increase: #{(final_memory - initial_memory).round(2)} MB"
-    puts "- Output file size: #{(file_size / 1024.0 / 1024.0).round(2)} MB"
-    puts "- Memory efficiency ratio: #{(file_size / 1024.0 / 1024.0 / (final_memory - initial_memory)).round(1)}:1"
+    puts "\n" + "-" * 70
+    puts "FINAL RESULTS:"
+    puts "-" * 70
+    puts "Records processed:    #{test_size.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
+    puts "Processing time:      #{total_time.round(2)} seconds"
+    puts "Average speed:        #{(test_size / total_time).round(0).to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} records/second"
+    puts ""
+    puts "Initial memory:       #{initial_memory.round(2)} MB"
+    puts "Final memory:         #{final_memory.round(2)} MB"
+    puts "Memory increase:      #{(final_memory - initial_memory).round(2)} MB"
+    puts ""
+    puts "Output file size:     #{(file_size / 1024.0 / 1024.0).round(2)} MB"
+
+    if (final_memory - initial_memory) > 0
+      efficiency = (file_size / 1024.0 / 1024.0 / (final_memory - initial_memory)).round(1)
+      puts "Memory efficiency:    #{efficiency}:1 (file:memory ratio)"
+    end
+
+    puts ""
+    puts "💡 Key Insight: Processed #{(file_size / 1024.0 / 1024.0).round(0)}MB of data"
+    puts "   using only #{(final_memory - initial_memory).abs.round(0)}MB additional memory!"
 
     # Cleanup
     File.delete('output/memory_demo.xml') if File.exist?('output/memory_demo.xml')
