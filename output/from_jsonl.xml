@@ -1,0 +1,653 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<documents>
+  <document>
+    <id>1</id>
+    <title>Document 1</title>
+    <content>This is the content of document 1</content>
+    <tags>
+      <item_0>tag8</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 0</author>
+    </metadata>
+  </document>
+  <document>
+    <id>2</id>
+    <title>Document 2</title>
+    <content>This is the content of document 2</content>
+    <tags>
+      <item_0>tag1</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 7</author>
+    </metadata>
+  </document>
+  <document>
+    <id>3</id>
+    <title>Document 3</title>
+    <content>This is the content of document 3</content>
+    <tags>
+      <item_0>tag8</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 3</author>
+    </metadata>
+  </document>
+  <document>
+    <id>4</id>
+    <title>Document 4</title>
+    <content>This is the content of document 4</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category3</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 0</author>
+    </metadata>
+  </document>
+  <document>
+    <id>5</id>
+    <title>Document 5</title>
+    <content>This is the content of document 5</content>
+    <tags>
+      <item_0>tag6</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 2</author>
+    </metadata>
+  </document>
+  <document>
+    <id>6</id>
+    <title>Document 6</title>
+    <content>This is the content of document 6</content>
+    <tags>
+      <item_0>tag8</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 0</author>
+    </metadata>
+  </document>
+  <document>
+    <id>7</id>
+    <title>Document 7</title>
+    <content>This is the content of document 7</content>
+    <tags>
+      <item_0>tag2</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 9</author>
+    </metadata>
+  </document>
+  <document>
+    <id>8</id>
+    <title>Document 8</title>
+    <content>This is the content of document 8</content>
+    <tags>
+      <item_0>tag7</item_0>
+      <item_1>category3</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 2</author>
+    </metadata>
+  </document>
+  <document>
+    <id>9</id>
+    <title>Document 9</title>
+    <content>This is the content of document 9</content>
+    <tags>
+      <item_0>tag7</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 5</author>
+    </metadata>
+  </document>
+  <document>
+    <id>10</id>
+    <title>Document 10</title>
+    <content>This is the content of document 10</content>
+    <tags>
+      <item_0>tag2</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 5</author>
+    </metadata>
+  </document>
+  <document>
+    <id>11</id>
+    <title>Document 11</title>
+    <content>This is the content of document 11</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 3</author>
+    </metadata>
+  </document>
+  <document>
+    <id>12</id>
+    <title>Document 12</title>
+    <content>This is the content of document 12</content>
+    <tags>
+      <item_0>tag5</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 1</author>
+    </metadata>
+  </document>
+  <document>
+    <id>13</id>
+    <title>Document 13</title>
+    <content>This is the content of document 13</content>
+    <tags>
+      <item_0>tag8</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 0</author>
+    </metadata>
+  </document>
+  <document>
+    <id>14</id>
+    <title>Document 14</title>
+    <content>This is the content of document 14</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 3</author>
+    </metadata>
+  </document>
+  <document>
+    <id>15</id>
+    <title>Document 15</title>
+    <content>This is the content of document 15</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 3</author>
+    </metadata>
+  </document>
+  <document>
+    <id>16</id>
+    <title>Document 16</title>
+    <content>This is the content of document 16</content>
+    <tags>
+      <item_0>tag9</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 4</author>
+    </metadata>
+  </document>
+  <document>
+    <id>17</id>
+    <title>Document 17</title>
+    <content>This is the content of document 17</content>
+    <tags>
+      <item_0>tag1</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 4</author>
+    </metadata>
+  </document>
+  <document>
+    <id>18</id>
+    <title>Document 18</title>
+    <content>This is the content of document 18</content>
+    <tags>
+      <item_0>tag2</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 3</author>
+    </metadata>
+  </document>
+  <document>
+    <id>19</id>
+    <title>Document 19</title>
+    <content>This is the content of document 19</content>
+    <tags>
+      <item_0>tag4</item_0>
+      <item_1>category3</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 6</author>
+    </metadata>
+  </document>
+  <document>
+    <id>20</id>
+    <title>Document 20</title>
+    <content>This is the content of document 20</content>
+    <tags>
+      <item_0>tag7</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 0</author>
+    </metadata>
+  </document>
+  <document>
+    <id>21</id>
+    <title>Document 21</title>
+    <content>This is the content of document 21</content>
+    <tags>
+      <item_0>tag7</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 6</author>
+    </metadata>
+  </document>
+  <document>
+    <id>22</id>
+    <title>Document 22</title>
+    <content>This is the content of document 22</content>
+    <tags>
+      <item_0>tag8</item_0>
+      <item_1>category3</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 6</author>
+    </metadata>
+  </document>
+  <document>
+    <id>23</id>
+    <title>Document 23</title>
+    <content>This is the content of document 23</content>
+    <tags>
+      <item_0>tag4</item_0>
+      <item_1>category3</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 4</author>
+    </metadata>
+  </document>
+  <document>
+    <id>24</id>
+    <title>Document 24</title>
+    <content>This is the content of document 24</content>
+    <tags>
+      <item_0>tag7</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 5</author>
+    </metadata>
+  </document>
+  <document>
+    <id>25</id>
+    <title>Document 25</title>
+    <content>This is the content of document 25</content>
+    <tags>
+      <item_0>tag8</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 2</author>
+    </metadata>
+  </document>
+  <document>
+    <id>26</id>
+    <title>Document 26</title>
+    <content>This is the content of document 26</content>
+    <tags>
+      <item_0>tag7</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 2</author>
+    </metadata>
+  </document>
+  <document>
+    <id>27</id>
+    <title>Document 27</title>
+    <content>This is the content of document 27</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 6</author>
+    </metadata>
+  </document>
+  <document>
+    <id>28</id>
+    <title>Document 28</title>
+    <content>This is the content of document 28</content>
+    <tags>
+      <item_0>tag4</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 2</author>
+    </metadata>
+  </document>
+  <document>
+    <id>29</id>
+    <title>Document 29</title>
+    <content>This is the content of document 29</content>
+    <tags>
+      <item_0>tag3</item_0>
+      <item_1>category3</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 9</author>
+    </metadata>
+  </document>
+  <document>
+    <id>30</id>
+    <title>Document 30</title>
+    <content>This is the content of document 30</content>
+    <tags>
+      <item_0>tag2</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 0</author>
+    </metadata>
+  </document>
+  <document>
+    <id>31</id>
+    <title>Document 31</title>
+    <content>This is the content of document 31</content>
+    <tags>
+      <item_0>tag8</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 7</author>
+    </metadata>
+  </document>
+  <document>
+    <id>32</id>
+    <title>Document 32</title>
+    <content>This is the content of document 32</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category3</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 9</author>
+    </metadata>
+  </document>
+  <document>
+    <id>33</id>
+    <title>Document 33</title>
+    <content>This is the content of document 33</content>
+    <tags>
+      <item_0>tag2</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 9</author>
+    </metadata>
+  </document>
+  <document>
+    <id>34</id>
+    <title>Document 34</title>
+    <content>This is the content of document 34</content>
+    <tags>
+      <item_0>tag6</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 8</author>
+    </metadata>
+  </document>
+  <document>
+    <id>35</id>
+    <title>Document 35</title>
+    <content>This is the content of document 35</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 5</author>
+    </metadata>
+  </document>
+  <document>
+    <id>36</id>
+    <title>Document 36</title>
+    <content>This is the content of document 36</content>
+    <tags>
+      <item_0>tag9</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 8</author>
+    </metadata>
+  </document>
+  <document>
+    <id>37</id>
+    <title>Document 37</title>
+    <content>This is the content of document 37</content>
+    <tags>
+      <item_0>tag3</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 6</author>
+    </metadata>
+  </document>
+  <document>
+    <id>38</id>
+    <title>Document 38</title>
+    <content>This is the content of document 38</content>
+    <tags>
+      <item_0>tag7</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 3</author>
+    </metadata>
+  </document>
+  <document>
+    <id>39</id>
+    <title>Document 39</title>
+    <content>This is the content of document 39</content>
+    <tags>
+      <item_0>tag1</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 7</author>
+    </metadata>
+  </document>
+  <document>
+    <id>40</id>
+    <title>Document 40</title>
+    <content>This is the content of document 40</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 1</author>
+    </metadata>
+  </document>
+  <document>
+    <id>41</id>
+    <title>Document 41</title>
+    <content>This is the content of document 41</content>
+    <tags>
+      <item_0>tag4</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 2</author>
+    </metadata>
+  </document>
+  <document>
+    <id>42</id>
+    <title>Document 42</title>
+    <content>This is the content of document 42</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 2</author>
+    </metadata>
+  </document>
+  <document>
+    <id>43</id>
+    <title>Document 43</title>
+    <content>This is the content of document 43</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 1</author>
+    </metadata>
+  </document>
+  <document>
+    <id>44</id>
+    <title>Document 44</title>
+    <content>This is the content of document 44</content>
+    <tags>
+      <item_0>tag7</item_0>
+      <item_1>category3</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 4</author>
+    </metadata>
+  </document>
+  <document>
+    <id>45</id>
+    <title>Document 45</title>
+    <content>This is the content of document 45</content>
+    <tags>
+      <item_0>tag1</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 6</author>
+    </metadata>
+  </document>
+  <document>
+    <id>46</id>
+    <title>Document 46</title>
+    <content>This is the content of document 46</content>
+    <tags>
+      <item_0>tag5</item_0>
+      <item_1>category4</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 8</author>
+    </metadata>
+  </document>
+  <document>
+    <id>47</id>
+    <title>Document 47</title>
+    <content>This is the content of document 47</content>
+    <tags>
+      <item_0>tag9</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 8</author>
+    </metadata>
+  </document>
+  <document>
+    <id>48</id>
+    <title>Document 48</title>
+    <content>This is the content of document 48</content>
+    <tags>
+      <item_0>tag2</item_0>
+      <item_1>category2</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 5</author>
+    </metadata>
+  </document>
+  <document>
+    <id>49</id>
+    <title>Document 49</title>
+    <content>This is the content of document 49</content>
+    <tags>
+      <item_0>tag0</item_0>
+      <item_1>category1</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 5</author>
+    </metadata>
+  </document>
+  <document>
+    <id>50</id>
+    <title>Document 50</title>
+    <content>This is the content of document 50</content>
+    <tags>
+      <item_0>tag8</item_0>
+      <item_1>category0</item_1>
+    </tags>
+    <metadata>
+      <created>2025-10-20 13:37:33 +0300</created>
+      <author>Author 7</author>
+    </metadata>
+  </document>
+</documents>
