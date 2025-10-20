@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customers>
+  <customer>
+    <customer_id>CUST_001</customer_id>
+    <personal_info>
+      <name>John Doe</name>
+      <email>john@example.com</email>
+      <address>
+        <street>123 Main St</street>
+        <city>Anytown</city>
+        <country>USA</country>
+      </address>
+    </personal_info>
+    <orders>
+      <order_id>ORD_001</order_id>
+      <date>2023-01-15</date>
+      <items>
+        <name>Product A</name>
+        <price>29.99</price>
+        <quantity>2</quantity>
+      </items>
+      <items>
+        <name>Product B</name>
+        <price>49.99</price>
+        <quantity>1</quantity>
+      </items>
+      <total>109.97</total>
+    </orders>
+    <orders>
+      <order_id>ORD_002</order_id>
+      <date>2023-02-20</date>
+      <items>
+        <name>Product C</name>
+        <price>19.99</price>
+        <quantity>3</quantity>
+      </items>
+      <total>59.97</total>
+    </orders>
+    <settings>
+      <newsletter>true</newsletter>
+      <notifications>
+        <email>true</email>
+        <sms>false</sms>
+        <push>true</push>
+      </notifications>
+    </settings>
+  </customer>
+</customers>

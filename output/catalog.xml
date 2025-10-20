@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<product_catalog>
+  <product>
+    <sku>PROD001</sku>
+    <name>Widget A</name>
+    <price>29.99</price>
+  </product>
+  <product>
+    <sku>PROD002</sku>
+    <name>Widget B</name>
+    <price>39.99</price>
+  </product>
+</product_catalog>

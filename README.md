@@ -9,10 +9,21 @@ memory-opt/
 ├── README.md              # This file - project documentation
 ├── BENCHMARK_RESULTS.md   # Detailed performance benchmarks
 ├── STREAMING_VS_BULK.md   # Streaming vs Bulk comparison
+├── ARCHITECTURE.md        # Code organization and design
 ├── Gemfile               # Ruby dependencies
 ├── lib/                  # Core library code
-│   ├── memory_efficient_xml_writer.rb  # Main streaming XML writer (recommended)
-│   └── simple_hash_to_xml.rb          # Lightweight alternative
+│   ├── writers/          # XML writer implementations
+│   │   ├── memory_efficient_xml_writer.rb  # Main streaming writer
+│   │   ├── bulk_xml_writer.rb             # Bulk writer (for comparison)
+│   │   ├── batch_xml_writer.rb            # Batch writer with GC
+│   │   └── rexml_streaming_writer.rb      # REXML alternative
+│   ├── utilities/        # Helper utilities
+│   │   ├── practical_xml_converter.rb     # Format converters
+│   │   └── xml_validator.rb               # XML validation
+│   ├── benchmarks/       # Performance testing
+│   │   ├── xml_writer_benchmark.rb        # Benchmark framework
+│   │   └── memory_usage_demo.rb           # Memory demo
+│   └── xml_writers.rb    # Loader for all classes
 ├── examples/             # Example scripts and demos
 │   ├── simple_example.rb         # Basic usage examples
 │   ├── quick_usage.rb            # Common scenarios guide
@@ -37,7 +48,7 @@ bundle install
 ### Basic Usage
 
 ```ruby
-require_relative 'lib/memory_efficient_xml_writer'
+require_relative 'lib/writers/memory_efficient_xml_writer'
 
 # Your data
 data = [
@@ -73,7 +84,7 @@ ruby quick_usage.rb
 - **Streaming Processing**: Writes XML incrementally without loading entire dataset into memory
 - **Constant Memory Usage**: Uses ~30-50MB regardless of dataset size
 - **Garbage Collection**: Automatic memory management for very large datasets
-- **Batch Processing**: Optional batching for optimal performance
+- **Automatic Flushing**: Periodic disk flushing for optimal performance
 
 ### XML Generation
 - **Valid XML Output**: Always produces well-formed XML with proper headers
@@ -87,16 +98,48 @@ ruby quick_usage.rb
 - Enumerators (most memory-efficient)
 - CSV files
 - JSONL (JSON Lines) files
-- Database cursors/batch processing
+- Database cursors with find_in_batches
 - Any iterable data source
 
 ## 📖 Documentation
+
+### Library Organization
+
+The library is organized into logical subfolders for better code organization:
+
+**`lib/writers/`** - Core XML writer implementations
+- `memory_efficient_xml_writer.rb` - Main streaming writer (⭐ **recommended**)
+- `bulk_xml_writer.rb` - Traditional approach (for comparison)
+- `batch_xml_writer.rb` - Batch processing with GC
+- `rexml_streaming_writer.rb` - REXML-based alternative
+
+**`lib/utilities/`** - Helper utilities
+- `practical_xml_converter.rb` - Convert CSV, JSONL, arrays to XML
+- `xml_validator.rb` - Validate XML files
+
+**`lib/benchmarks/`** - Performance testing
+- `xml_writer_benchmark.rb` - Benchmark framework
+- `memory_usage_demo.rb` - Memory efficiency demonstrations
+
+**Loading Options:**
+
+```ruby
+# Option 1: Load specific classes (recommended)
+require_relative 'lib/writers/memory_efficient_xml_writer'
+require_relative 'lib/utilities/practical_xml_converter'
+
+# Option 2: Load everything at once
+require_relative 'lib/xml_writers'
+# Now all classes are available
+```
 
 ### Core Classes
 
 #### `MemoryEfficientXMLWriter`
 
 The main class for streaming XML generation. Recommended for most use cases.
+
+**Location:** `lib/writers/memory_efficient_xml_writer.rb`
 
 **Methods:**
 
@@ -111,7 +154,7 @@ The main class for streaming XML generation. Recommended for most use cases.
 **Example:**
 
 ```ruby
-require_relative 'lib/memory_efficient_xml_writer'
+require_relative 'lib/writers/memory_efficient_xml_writer'
 
 writer = MemoryEfficientXMLWriter.new('output/data.xml', 'records')
 writer.start_document
@@ -124,27 +167,71 @@ end
 writer.finish_document
 ```
 
-#### `BatchXMLWriter`
+### Utility Classes
 
-Enhanced version with automatic batch processing and garbage collection. Best for datasets > 100K records.
+The project includes several utility classes to make common tasks easier:
 
-**Additional Methods:**
+#### `PracticalXMLConverter`
 
-- `initialize(file_path, root_element_name = 'data', batch_size = 1000)` - Set batch size
-- `add_to_batch(hash, element_name = 'item')` - Add item to current batch
-- `flush_batch` - Manually write current batch
+Helper class for converting different data formats to XML.
+
+**Location:** `lib/utilities/practical_xml_converter.rb`
+
+**Methods:**
+- `csv_to_xml(csv_file, xml_file, headers: true)` - Convert CSV files to XML
+- `jsonl_to_xml(jsonl_file, xml_file)` - Convert JSONL files to XML
+- `simulate_database_to_xml(xml_file, total_records, batch_size)` - Database batch export
+- `array_to_xml_chunked(array, xml_file, chunk_size)` - Process large arrays in chunks
 
 **Example:**
-
 ```ruby
-batch_writer = BatchXMLWriter.new('output/huge.xml', 'data', batch_size: 1000)
-batch_writer.start_document
+require_relative 'lib/utilities/practical_xml_converter'
 
-millions_of_records.each do |record|
-  batch_writer.add_to_batch(record, 'record')
-end
+PracticalXMLConverter.csv_to_xml('data.csv', 'output/data.xml')
+```
 
-batch_writer.finish_document
+#### `XMLValidator`
+
+Validate generated XML files.
+
+**Location:** `lib/utilities/xml_validator.rb`
+
+**Methods:**
+- `validate_xml_file(xml_file)` - Validates XML structure (uses Nokogiri if available, falls back to basic validation)
+
+**Example:**
+```ruby
+require_relative 'lib/utilities/xml_validator'
+
+XMLValidator.validate_xml_file('output/data.xml')
+```
+
+#### `XMLWriterBenchmark`
+
+Performance benchmarking for comparing different writer approaches.
+
+**Location:** `lib/benchmarks/xml_writer_benchmark.rb`
+
+**Example:**
+```ruby
+require_relative 'lib/benchmarks/xml_writer_benchmark'
+
+benchmark = XMLWriterBenchmark.new
+benchmark.run_all_benchmarks
+```
+
+#### `MemoryUsageDemo`
+
+Demonstrates memory efficiency with large-scale datasets.
+
+**Location:** `lib/benchmarks/memory_usage_demo.rb`
+
+**Example:**
+```ruby
+require_relative 'lib/benchmarks/memory_usage_demo'
+
+demo = MemoryUsageDemo.new
+demo.demonstrate_memory_efficiency
 ```
 
 ### Usage Patterns
@@ -227,7 +314,6 @@ writer.write_complete_xml(data_enumerator, 'record')
 ### Processing Speed
 
 - **Streaming Writer**: 11,000-13,000 records/second (consistent across all dataset sizes)
-- **Batch Writer**: 11,000-12,000 records/second (with automatic GC optimization)
 - **Scalability**: Linear - processing time scales linearly with dataset size
 - **Performance**: No degradation even with 500,000+ records
 
@@ -244,15 +330,6 @@ Streaming Writer Test
    Output file size: 570.2 MB
    Processing speed: 12,828 records/sec
    Memory efficiency: 570:1 ratio
-
-Batch Writer Test
-   Time: 42.5 seconds
-   Memory - Start: 23.72 MB
-   Memory - Peak: 24.84 MB
-   Memory - End: 24.84 MB
-   Memory - Delta: 1.13 MB
-   Output file size: 570.24 MB
-   Processing speed: 11,763 records/sec
 ```
 
 **Extreme Scale Test (100,000 complex nested records):**
@@ -355,6 +432,40 @@ end
 # File automatically closed when block exits
 ```
 
+## 🏗️ Project Organization
+
+### Why Subfolders?
+
+The library uses a well-organized folder structure to:
+- ✅ **Easy Navigation** - Find classes instantly by category
+- ✅ **Clear Purpose** - Each folder has a specific responsibility
+- ✅ **Scalability** - Easy to add new classes without clutter
+- ✅ **Professional** - Follows Ruby gem best practices
+
+### Adding New Classes
+
+**Add a new writer:**
+```ruby
+# Create: lib/writers/my_custom_writer.rb
+class MyCustomWriter < MemoryEfficientXMLWriter
+  # Your implementation
+end
+
+# Update: lib/xml_writers.rb
+require_relative 'writers/my_custom_writer'
+```
+
+**Add a new utility:**
+```ruby
+# Create: lib/utilities/my_helper.rb
+class MyHelper
+  # Your implementation
+end
+
+# Update: lib/xml_writers.rb
+require_relative 'utilities/my_helper'
+```
+
 ## 🔧 Development
 
 ### Running Tests
@@ -395,9 +506,9 @@ The writers are **not thread-safe**. Use separate instances for concurrent proce
 ### Memory Tips
 
 1. **Use Enumerators**: Always prefer enumerators over loading entire datasets into arrays
-2. **Batch Processing**: Use `BatchXMLWriter` for datasets > 100K records
-3. **File Streaming**: Process large input files line-by-line, don't load into memory
-4. **Database Cursors**: Use `find_in_batches` or similar for database queries
+2. **File Streaming**: Process large input files line-by-line, don't load into memory
+3. **Database Cursors**: Use `find_in_batches` or similar for database queries
+4. **Periodic Flushing**: The writer automatically flushes periodically to free memory
 
 ### Best Practices
 
@@ -420,8 +531,15 @@ writer.finish_document
 - **Dependencies**: None required (uses built-in libraries)
 - **Optional**: `nokogiri` gem for XML validation in examples
 
-
 ## 📚 Additional Resources
+
+### Documentation Files
+
+- **`README.md`** - This file - complete project documentation
+- **`ARCHITECTURE.md`** - Detailed architecture and design decisions
+- **`BENCHMARK_RESULTS.md`** - Comprehensive performance benchmarks
+- **`STREAMING_VS_BULK.md`** - Comparison between approaches
+- **`FOLDER_STRUCTURE_SUMMARY.md`** - Folder organization guide
 
 ### Example Files
 
@@ -442,5 +560,49 @@ writer.finish_document
 3. **Explore**: Check `examples/quick_usage.rb` for common patterns
 4. **Deep Dive**: Study `examples/practical_example.rb` for real-world scenarios
 5. **Optimize**: Use `examples/benchmark.rb` to test performance
-6. **Integrate**: Apply to your own project
+6. **Understand**: Read `ARCHITECTURE.md` for design details
+7. **Integrate**: Apply to your own project
+
+## 🌟 Quick Reference
+
+### Most Common Use Case
+
+```ruby
+# Load the main writer
+require_relative 'lib/writers/memory_efficient_xml_writer'
+
+# Create writer
+writer = MemoryEfficientXMLWriter.new('output.xml', 'root')
+
+# Write data
+writer.start_writing
+data.each { |item| writer.write_hash(item, 'item') }
+writer.finish_writing
+```
+
+### File Conversions
+
+```ruby
+# Load converter
+require_relative 'lib/utilities/practical_xml_converter'
+
+# Convert files
+PracticalXMLConverter.csv_to_xml('input.csv', 'output.xml')
+PracticalXMLConverter.jsonl_to_xml('input.jsonl', 'output.xml')
+```
+
+### Performance Testing
+
+```ruby
+# Load benchmark
+require_relative 'lib/benchmarks/xml_writer_benchmark'
+
+# Run tests
+benchmark = XMLWriterBenchmark.new
+benchmark.run_all_benchmarks
+```
+
+---
+
+### Built with ❤️ for handling massive datasets efficiently
 
