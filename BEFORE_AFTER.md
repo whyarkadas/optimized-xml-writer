@@ -8,9 +8,8 @@ lib/
 └── memory_efficient_xml_writer.rb
     ├── MemoryEfficientXMLWriter class
     ├── BulkXMLWriter class
-    ├── BatchXMLWriter class
-    └── NokogiriStreamingWriter class
-    (All 4 classes in ONE file!)
+    └── BatchXMLWriter class
+    (All 3 classes in ONE file!)
 
 examples/
 ├── benchmark.rb
@@ -45,7 +44,6 @@ lib/
 │   ├── memory_efficient_xml_writer.rb  ← MemoryEfficientXMLWriter
 │   ├── bulk_xml_writer.rb             ← BulkXMLWriter
 │   ├── batch_xml_writer.rb            ← BatchXMLWriter
-│   └── nokogiri_streaming_writer.rb   ← NokogiriStreamingWriter
 │
 ├── Utility Classes (Each in own file)
 │   ├── xml_writer_benchmark.rb        ← XMLWriterBenchmark
@@ -90,7 +88,6 @@ examples/
 | `lib/memory_efficient_xml_writer.rb` | 1 class | 101 | Streaming writer |
 | `lib/bulk_xml_writer.rb` | 1 class | 82 | Bulk writer |
 | `lib/batch_xml_writer.rb` | 1 class | 38 | Batch writer |
-| `lib/writers/nokogiri_streaming_writer.rb` | 1 class | 67 | Nokogiri writer with formatting |
 | `lib/xml_writer_benchmark.rb` | 1 class | 313 | Benchmarking |
 | `lib/memory_usage_demo.rb` | 1 class | 112 | Demo |
 | `lib/practical_xml_converter.rb` | 1 class | 130 | Converter |
@@ -212,7 +209,6 @@ Core Writers:
   lib/memory_efficient_xml_writer.rb   ~3 KB  (1 class)
   lib/bulk_xml_writer.rb              ~3 KB  (1 class)
   lib/batch_xml_writer.rb             ~1 KB  (1 class)
-  lib/nokogiri_streaming_writer.rb    ~2 KB  (1 class)
 
 Utility Classes:
   lib/practical_xml_converter.rb      ~4 KB  (1 class)
@@ -283,7 +279,6 @@ lib/bulk_xml_writer.rb (standalone)
 lib/batch_xml_writer.rb
   └─ Extends: MemoryEfficientXMLWriter
 
-lib/nokogiri_streaming_writer.rb (standalone)
 
 lib/xml_writer_benchmark.rb
   └─ Uses: MemoryEfficientXMLWriter

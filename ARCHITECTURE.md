@@ -11,8 +11,7 @@ lib/
 ├── writers/                           # Core XML writer implementations
 │   ├── memory_efficient_xml_writer.rb  # Main streaming writer (USE THIS)
 │   ├── bulk_xml_writer.rb             # Traditional bulk writer (comparison only)
-│   ├── batch_xml_writer.rb            # Batch processing with GC optimization
-│   └── nokogiri_streaming_writer.rb   # Nokogiri with enhanced formatting
+│   └── batch_xml_writer.rb            # Batch processing with GC optimization
 ├── utilities/                         # Helper utilities
 │   ├── practical_xml_converter.rb     # Format conversion helpers (CSV, JSONL, DB)
 │   └── xml_validator.rb               # XML validation utilities
@@ -73,26 +72,7 @@ data.each { |item| writer.add_to_batch(item, 'item') }
 writer.finish_writing
 ```
 
-### 4. NokogiriStreamingWriter
-**File:** `lib/writers/nokogiri_streaming_writer.rb`  
-**Purpose:** Nokogiri-based writer with enhanced formatting  
-**Use Case:** Smaller datasets where XML formatting quality matters  
-**Memory:** ~50 MB constant (higher than MemoryEfficientXMLWriter due to re-parsing)
-
-**Key Features:**
-- Uses Nokogiri library (same as other writers)
-- Re-parses XML for prettier indentation
-- Higher memory usage due to extra parsing step
-- Produces cleaner, more readable XML output
-- Good for <10K records where formatting is important
-
-**Technical Difference from MemoryEfficientXMLWriter:**
-- Creates XML with Nokogiri builder
-- Parses it back with `Nokogiri::XML()` for formatting
-- Extracts with proper indentation
-- This extra round-trip increases memory usage and reduces speed
-
-### 5. PracticalXMLConverter
+### 4. PracticalXMLConverter
 **File:** `lib/utilities/practical_xml_converter.rb`  
 **Purpose:** Helper class for common conversion tasks  
 **Use Case:** Converting CSV, JSONL, database exports to XML
@@ -109,7 +89,7 @@ PracticalXMLConverter.csv_to_xml('data.csv', 'output.xml')
 PracticalXMLConverter.jsonl_to_xml('data.jsonl', 'output.xml')
 ```
 
-### 6. XMLValidator
+### 5. XMLValidator
 **File:** `lib/utilities/xml_validator.rb`  
 **Purpose:** Validate generated XML files  
 **Use Case:** Ensuring XML output is valid
@@ -124,7 +104,7 @@ PracticalXMLConverter.jsonl_to_xml('data.jsonl', 'output.xml')
 XMLValidator.validate_xml_file('output.xml')
 ```
 
-### 7. XMLWriterBenchmark
+### 6. XMLWriterBenchmark
 **File:** `lib/benchmarks/xml_writer_benchmark.rb`  
 **Purpose:** Performance benchmarking framework  
 **Use Case:** Comparing streaming vs bulk performance
@@ -141,7 +121,7 @@ benchmark = XMLWriterBenchmark.new
 benchmark.run_all_benchmarks
 ```
 
-### 8. MemoryUsageDemo
+### 7. MemoryUsageDemo
 **File:** `lib/benchmarks/memory_usage_demo.rb`  
 **Purpose:** Demonstrates memory efficiency at scale  
 **Use Case:** Showing memory efficiency benefits
@@ -166,7 +146,6 @@ Each class is in its own file with a single, clear responsibility:
 - `MemoryEfficientXMLWriter` → Streaming with minimal memory (RECOMMENDED)
 - `BulkXMLWriter` → Comparison/benchmarking (DO NOT USE IN PRODUCTION)
 - `BatchXMLWriter` → Extended streaming with GC for huge datasets
-- `NokogiriStreamingWriter` → Enhanced formatting with extra parsing
 
 **Utility Classes:**
 - `PracticalXMLConverter` → Format conversion helpers
@@ -183,7 +162,6 @@ MemoryEfficientXMLWriter (standalone, uses Nokogiri)
     BatchXMLWriter (extends MemoryEfficientXMLWriter)
 
 BulkXMLWriter (standalone, uses Nokogiri)
-NokogiriStreamingWriter (standalone, uses Nokogiri with re-parsing)
 ```
 
 ### Loading Strategy
@@ -203,7 +181,6 @@ require_relative 'lib/xml_writers'
 # - MemoryEfficientXMLWriter (RECOMMENDED)
 # - BulkXMLWriter (comparison only)
 # - BatchXMLWriter (huge datasets)
-# - NokogiriStreamingWriter (pretty formatting)
 # Utility Classes:
 # - PracticalXMLConverter
 # - XMLValidator
@@ -257,13 +234,11 @@ Data Source → BulkXMLWriter → Memory Array → File (at end)
 | **MemoryEfficientXMLWriter** | Nokogiri | ~25 MB constant | 12K rec/s | ✅ Production (RECOMMENDED) |
 | BulkXMLWriter | Nokogiri | ~3 MB per 1K | 9K rec/s | ❌ Comparison only |
 | BatchXMLWriter | Nokogiri | ~30 MB constant | 11K rec/s | ✅ >100K records |
-| NokogiriStreamingWriter | Nokogiri | ~50 MB constant | 8K rec/s | ⚠️ Small datasets with pretty output |
 
 **Note:** All writers use Nokogiri for XML generation. The memory and speed differences come from:
 - **MemoryEfficientXMLWriter**: Direct streaming, no extra processing
 - **BulkXMLWriter**: Loads all data into memory before writing
 - **BatchXMLWriter**: Adds GC management for very large datasets
-- **NokogiriStreamingWriter**: Re-parses XML for prettier formatting (extra overhead)
 
 ## Testing
 
@@ -293,10 +268,9 @@ To add a new XML writer implementation:
 
 1. **Production Code:** Use `MemoryEfficientXMLWriter` exclusively
 2. **Large Datasets:** Consider `BatchXMLWriter` for >100K records
-3. **Small, Pretty XML:** Use `NokogiriStreamingWriter` for <10K records where formatting matters
-4. **Benchmarking:** Use `BulkXMLWriter` to show performance gains
-5. **Loading:** Only require what you need to minimize dependencies
-6. **All Writers Use Nokogiri:** No REXML dependency needed
+3. **Benchmarking:** Use `BulkXMLWriter` to show performance gains
+4. **Loading:** Only require what you need to minimize dependencies
+5. **All Writers Use Nokogiri:** Consistent XML generation across all writers
 
 ## File Size Reference
 
@@ -305,7 +279,6 @@ To add a new XML writer implementation:
 memory_efficient_xml_writer.rb  ~3 KB  (main streaming class)
 bulk_xml_writer.rb             ~3 KB  (comparison/benchmarking)
 batch_xml_writer.rb            ~1 KB  (extends main with GC)
-nokogiri_streaming_writer.rb   ~2 KB  (enhanced formatting)
 ```
 
 **utilities/ (Helper Classes):**

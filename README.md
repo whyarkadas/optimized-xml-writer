@@ -15,8 +15,7 @@ memory-opt/
 │   ├── writers/          # XML writer implementations
 │   │   ├── memory_efficient_xml_writer.rb  # Main streaming writer
 │   │   ├── bulk_xml_writer.rb             # Bulk writer (for comparison)
-│   │   ├── batch_xml_writer.rb            # Batch writer with GC
-│   │   └── nokogiri_streaming_writer.rb   # Nokogiri with enhanced formatting
+│   │   └── batch_xml_writer.rb            # Batch writer with GC
 │   ├── utilities/        # Helper utilities
 │   │   ├── practical_xml_converter.rb     # Format converters
 │   │   └── xml_validator.rb               # XML validation
@@ -111,7 +110,6 @@ The library is organized into logical subfolders for better code organization:
 - `memory_efficient_xml_writer.rb` - Main streaming writer (⭐ **recommended**)
 - `bulk_xml_writer.rb` - Traditional approach (for comparison)
 - `batch_xml_writer.rb` - Batch processing with GC
-- `nokogiri_streaming_writer.rb` - Nokogiri with enhanced formatting
 
 **`lib/utilities/`** - Helper utilities
 - `practical_xml_converter.rb` - Convert CSV, JSONL, arrays to XML
