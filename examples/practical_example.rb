@@ -34,13 +34,7 @@ if __FILE__ == $0
 
   puts "\n" + "="*50 + "\n"
 
-  # Example 2: Simulate large database export
-  PracticalXMLConverter.simulate_database_to_xml('output/from_database.xml', 5000, 500)
-  XMLValidator.validate_xml_file('output/from_database.xml')
-
-  puts "\n" + "="*50 + "\n"
-
-  # Example 3: Process existing array
+  # Example 2: Process existing array
   large_array = Array.new(2000) do |i|
     {
       index: i,
@@ -55,7 +49,7 @@ if __FILE__ == $0
 
   puts "\n=== Summary ===\n"
   puts "Generated files:"
-  ['output/from_jsonl.xml', 'output/from_database.xml', 'output/from_array.xml'].each do |file|
+  ['output/from_jsonl.xml', 'output/from_array.xml'].each do |file|
     if File.exist?(file)
       size_kb = (File.size(file) / 1024.0).round(2)
       filename = File.basename(file)

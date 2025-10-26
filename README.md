@@ -26,7 +26,7 @@ memory-opt/
 ├── examples/             # Example scripts and demos
 │   ├── simple_example.rb         # Basic usage examples
 │   ├── quick_usage.rb            # Common scenarios guide
-│   ├── practical_example.rb      # Real-world examples (JSONL, DB)
+│   ├── practical_example.rb      # Real-world examples (JSONL)
 │   └── benchmark.rb              # Performance testing
 ├── data/                 # Sample data files
 │   └── sample_data.jsonl
@@ -66,7 +66,7 @@ writer.write_complete_xml(data, 'user')
 cd examples
 ruby simple_example.rb
 
-# Try practical conversions (JSONL, database simulation)
+# Try practical conversions (JSONL)
 ruby practical_example.rb
 
 # Run performance benchmarks
@@ -95,7 +95,6 @@ ruby quick_usage.rb
 - Ruby arrays of hashes
 - Enumerators (most memory-efficient)
 - JSONL (JSON Lines) files
-- Database cursors with find_in_batches
 - Any iterable data source
 
 ## 📖 Documentation
@@ -175,7 +174,6 @@ Helper class for converting different data formats to XML.
 
 **Methods:**
 - `jsonl_to_xml(jsonl_file, xml_file)` - Convert JSONL files to XML
-- `simulate_database_to_xml(xml_file, total_records, batch_size)` - Database batch export
 - `array_to_xml_chunked(array, xml_file, chunk_size)` - Process large arrays in chunks
 
 **Example:**
@@ -241,25 +239,7 @@ writer = MemoryEfficientXMLWriter.new('output/data.xml', 'records')
 writer.write_complete_xml(data, 'record')
 ```
 
-#### Pattern 2: Streaming from Database
-
-Most memory-efficient for database exports.
-
-```ruby
-writer = MemoryEfficientXMLWriter.new('output/export.xml', 'users')
-writer.start_document
-
-# ActiveRecord example
-User.find_in_batches(batch_size: 1000) do |batch|
-  batch.each do |user|
-    writer.write_hash(user.attributes, 'user')
-  end
-end
-
-writer.finish_document
-```
-
-#### Pattern 3: Processing Files
+#### Pattern 2: Processing Files
 
 Convert JSONL files to XML.
 
@@ -277,7 +257,7 @@ end
 writer.finish_document
 ```
 
-#### Pattern 4: Using Enumerators
+#### Pattern 3: Using Enumerators
 
 Create on-demand data generation without storing in memory.
 
@@ -493,20 +473,19 @@ The writers are **not thread-safe**. Use separate instances for concurrent proce
 
 1. **Use Enumerators**: Always prefer enumerators over loading entire datasets into arrays
 2. **File Streaming**: Process large input files line-by-line, don't load into memory
-3. **Database Cursors**: Use `find_in_batches` or similar for database queries
-4. **Periodic Flushing**: The writer automatically flushes periodically to free memory
+3. **Periodic Flushing**: The writer automatically flushes periodically to free memory
 
 ### Best Practices
 
 ```ruby
 # ❌ Don't do this (loads everything into memory)
-all_records = Model.all.to_a
+all_records = generate_all_data  # Loads millions of records
 writer.write_complete_xml(all_records)
 
-# ✅ Do this (streams from database)
+# ✅ Do this (streams data)
 writer.start_document
-Model.find_in_batches do |batch|
-  batch.each { |record| writer.write_hash(record.attributes, 'record') }
+enumerator.each do |record|
+  writer.write_hash(record, 'record')
 end
 writer.finish_document
 ```
@@ -531,7 +510,7 @@ writer.finish_document
 
 - **`examples/simple_example.rb`** - Start here for basic usage
 - **`examples/quick_usage.rb`** - Common scenarios and patterns
-- **`examples/practical_example.rb`** - Real-world conversions (JSONL, DB)
+- **`examples/practical_example.rb`** - Real-world conversions (JSONL)
 - **`examples/benchmark.rb`** - Performance testing and optimization
 
 ### Sample Data

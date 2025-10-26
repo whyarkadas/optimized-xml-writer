@@ -27,7 +27,7 @@ lib/
 │   ├── bulk_xml_writer.rb             # Bulk writer (comparison)
 │   └── batch_xml_writer.rb            # Batch processing with GC
 ├── utilities/                         # Helper utilities
-│   ├── practical_xml_converter.rb     # Format converters (JSONL, DB)
+│   ├── practical_xml_converter.rb     # Format converters (JSONL)
 │   └── xml_validator.rb               # XML validation
 ├── benchmarks/                        # Performance testing
 │   ├── xml_writer_benchmark.rb        # Benchmark framework
@@ -178,7 +178,6 @@ All examples completed successfully!
 ```bash
 $ ruby examples/practical_example.rb
 ✓ JSONL conversion complete
-✓ Database export complete
 ✓ Array conversion complete
 All files are memory-efficiently generated and valid XML!
 ```

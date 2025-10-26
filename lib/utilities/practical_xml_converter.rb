@@ -25,27 +25,7 @@ class PracticalXMLConverter
     puts "Conversion complete!"
   end
 
-  # Example 2: Simulate database-like batch processing
-  def self.simulate_database_to_xml(xml_file, total_records = 50000, batch_size = 1000)
-    puts "Simulating database export to XML: #{total_records} records"
-
-    xml_writer = MemoryEfficientXMLWriter.new(xml_file, 'database_export')
-    xml_writer.start_writing
-
-    # Simulate database cursor/batch processing
-    (0...total_records).step(batch_size) do |offset|
-      # Simulate fetching a batch from database
-      batch = fetch_database_batch(offset, batch_size, total_records)
-      batch.each { |record| xml_writer.write_hash(record, 'record') }
-
-      puts "Processed batch: #{offset} - #{[offset + batch_size - 1, total_records - 1].min}"
-    end
-
-    xml_writer.finish_writing
-    puts "Database export complete!"
-  end
-
-  # Example 3: Process existing Ruby array in chunks to manage memory
+  # Example 2: Process existing Ruby array in chunks to manage memory
   def self.array_to_xml_chunked(array, xml_file, chunk_size = 1000)
     puts "Converting array to XML in chunks of #{chunk_size}"
 
@@ -63,35 +43,5 @@ class PracticalXMLConverter
 
     xml_writer.finish_writing
     puts "Array conversion complete!"
-  end
-
-  private
-
-  def self.fetch_database_batch(offset, batch_size, total_records)
-    # Simulate database batch fetch
-    actual_batch_size = [batch_size, total_records - offset].min
-    return [] if actual_batch_size <= 0
-
-    (0...actual_batch_size).map do |i|
-      record_id = offset + i + 1
-      {
-        id: record_id,
-        name: "User #{record_id}",
-        email: "user#{record_id}@company.com",
-        department: ["Engineering", "Sales", "Marketing", "Support"][record_id % 4],
-        salary: rand(50000..150000),
-        hire_date: (Date.today - rand(1000)).to_s,
-        active: rand(10) > 1, # 90% active
-        metadata: {
-          last_login: Time.now - rand(30 * 24 * 3600), # Random time in last 30 days
-          login_count: rand(500),
-          preferences: {
-            theme: ['light', 'dark'].sample,
-            language: ['en', 'es', 'fr'].sample,
-            timezone: ['UTC', 'EST', 'PST', 'GMT'].sample
-          }
-        }
-      }
-    end
   end
 end

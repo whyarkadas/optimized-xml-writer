@@ -13,7 +13,7 @@ lib/
 │   ├── bulk_xml_writer.rb             # Traditional bulk writer (comparison only)
 │   └── batch_xml_writer.rb            # Batch processing with GC optimization
 ├── utilities/                         # Helper utilities
-│   ├── practical_xml_converter.rb     # Format conversion helpers (JSONL, DB)
+│   ├── practical_xml_converter.rb     # Format conversion helpers (JSONL)
 │   └── xml_validator.rb               # XML validation utilities
 ├── benchmarks/                        # Performance testing and demonstrations
 │   ├── xml_writer_benchmark.rb        # Performance benchmarking class
@@ -75,17 +75,15 @@ writer.finish_writing
 ### 4. PracticalXMLConverter
 **File:** `lib/utilities/practical_xml_converter.rb`  
 **Purpose:** Helper class for common conversion tasks  
-**Use Case:** Converting JSONL, database exports, and arrays to XML
+**Use Case:** Converting JSONL files and arrays to XML
 
 **Key Features:**
 - JSONL to XML conversion
-- Database batch export simulation
 - Array chunking with memory management
 
 **API:**
 ```ruby
 PracticalXMLConverter.jsonl_to_xml('data.jsonl', 'output.xml')
-PracticalXMLConverter.simulate_database_to_xml('output.xml', 50000, 1000)
 PracticalXMLConverter.array_to_xml_chunked(large_array, 'output.xml', 1000)
 ```
 
@@ -200,8 +198,8 @@ examples/
 
 Each example demonstrates specific use cases:
 - **simple_example.rb** → Getting started, basic patterns
-- **quick_usage.rb** → 5 common scenarios (array, database, nested, huge, custom)
-- **practical_example.rb** → JSONL, database simulation
+- **quick_usage.rb** → 4 common scenarios (array, nested, huge, custom)
+- **practical_example.rb** → JSONL conversion and array processing
 - **benchmark.rb** → Streaming vs Bulk performance comparison
 
 ## Data Flow

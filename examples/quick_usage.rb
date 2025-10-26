@@ -32,61 +32,10 @@ writer.finish_writing
 puts "✓ Created output/users.xml from array of #{user_data.length} hashes"
 
 # ==============================================================================
-# SCENARIO 2: Processing large dataset from database (ActiveRecord example)
+# SCENARIO 2: Processing data with complex nested structures
 # ==============================================================================
 
-puts "\nScenario 2: Processing large dataset (simulated database)"
-puts "-" * 50
-
-# Simulate database cursor or batch processing
-def simulate_database_batches(&block)
-  # This simulates ActiveRecord's find_in_batches or similar
-  total_records = 10_000
-  batch_size = 1_000
-
-  (0...total_records).step(batch_size) do |offset|
-    batch = []
-    batch_size.times do |i|
-      record_id = offset + i + 1
-      break if record_id > total_records
-
-      batch << {
-        id: record_id,
-        name: "User #{record_id}",
-        email: "user#{record_id}@example.com",
-        created_at: Time.now.iso8601,
-        metadata: {
-          score: rand(100),
-          active: [true, false].sample
-        }
-      }
-    end
-
-    yield batch unless batch.empty?
-  end
-end
-
-# Memory-efficient processing
-writer = MemoryEfficientXMLWriter.new('output/large_users.xml', 'users')
-writer.start_writing
-
-total_processed = 0
-simulate_database_batches do |batch|
-  batch.each do |user_hash|
-    writer.write_hash(user_hash, 'user')
-    total_processed += 1
-  end
-  puts "Processed #{total_processed} records..." if total_processed % 2000 == 0
-end
-
-writer.finish_writing
-puts "✓ Created output/large_users.xml with #{total_processed} records"
-
-# ==============================================================================
-# SCENARIO 3: Processing data with complex nested structures
-# ==============================================================================
-
-puts "\nScenario 3: Complex nested data structures"
+puts "\nScenario 2: Complex nested data structures"
 puts "-" * 50
 
 complex_data = [
@@ -139,10 +88,10 @@ writer.finish_writing
 puts "✓ Created output/complex_data.xml with nested structures"
 
 # ==============================================================================
-# SCENARIO 4: Processing huge datasets (50K+ records)
+# SCENARIO 3: Processing huge datasets (50K+ records)
 # ==============================================================================
 
-puts "\nScenario 4: Processing huge datasets efficiently"
+puts "\nScenario 3: Processing huge datasets efficiently"
 puts "-" * 50
 
 # Streaming writer handles huge datasets with constant memory
@@ -170,10 +119,10 @@ writer.finish_writing
 puts "✓ Created output/huge_dataset.xml with 50,000 records using streaming"
 
 # ==============================================================================
-# SCENARIO 5: Custom element names and root elements
+# SCENARIO 4: Custom element names and root elements
 # ==============================================================================
 
-puts "\nScenario 5: Custom XML structure"
+puts "\nScenario 4: Custom XML structure"
 puts "-" * 50
 
 products = [
