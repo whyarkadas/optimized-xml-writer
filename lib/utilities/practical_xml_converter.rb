@@ -1,29 +1,10 @@
 require_relative '../writers/memory_efficient_xml_writer'
-require 'csv'
 require 'json'
 
 # Practical examples for different data sources
 class PracticalXMLConverter
 
-  # Example 1: Convert CSV file to XML (memory efficient)
-  def self.csv_to_xml(csv_file, xml_file, headers: true)
-    puts "Converting CSV to XML: #{csv_file} -> #{xml_file}"
-
-    xml_writer = MemoryEfficientXMLWriter.new(xml_file, 'records')
-    xml_writer.start_writing
-
-    # Process CSV row by row
-    CSV.foreach(csv_file, headers: headers) do |row|
-      # Convert CSV row to hash
-      hash = headers ? row.to_h : row.each_with_index.to_h { |v, i| ["column_#{i}", v] }
-      xml_writer.write_hash(hash, 'record')
-    end
-
-    xml_writer.finish_writing
-    puts "Conversion complete!"
-  end
-
-  # Example 2: Convert JSONL (JSON Lines) file to XML
+  # Example 1: Convert JSONL (JSON Lines) file to XML
   def self.jsonl_to_xml(jsonl_file, xml_file)
     puts "Converting JSONL to XML: #{jsonl_file} -> #{xml_file}"
 
@@ -44,7 +25,7 @@ class PracticalXMLConverter
     puts "Conversion complete!"
   end
 
-  # Example 3: Simulate database-like batch processing
+  # Example 2: Simulate database-like batch processing
   def self.simulate_database_to_xml(xml_file, total_records = 50000, batch_size = 1000)
     puts "Simulating database export to XML: #{total_records} records"
 
@@ -64,7 +45,7 @@ class PracticalXMLConverter
     puts "Database export complete!"
   end
 
-  # Example 4: Process existing Ruby array in chunks to manage memory
+  # Example 3: Process existing Ruby array in chunks to manage memory
   def self.array_to_xml_chunked(array, xml_file, chunk_size = 1000)
     puts "Converting array to XML in chunks of #{chunk_size}"
 

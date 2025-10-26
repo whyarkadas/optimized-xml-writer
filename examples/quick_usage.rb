@@ -16,7 +16,7 @@ Dir.chdir(File.expand_path('..', __dir__))
 puts "Scenario 1: Converting array of hashes to XML"
 puts "-" * 50
 
-# Your data (could come from database, API, CSV, etc.)
+# Your data (could come from database, API, etc.)
 user_data = [
   { id: 1, name: "Alice", email: "alice@example.com", active: true },
   { id: 2, name: "Bob", email: "bob@example.com", active: false },

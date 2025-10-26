@@ -26,10 +26,9 @@ memory-opt/
 ├── examples/             # Example scripts and demos
 │   ├── simple_example.rb         # Basic usage examples
 │   ├── quick_usage.rb            # Common scenarios guide
-│   ├── practical_example.rb      # Real-world examples (CSV, JSONL, DB)
+│   ├── practical_example.rb      # Real-world examples (JSONL, DB)
 │   └── benchmark.rb              # Performance testing
 ├── data/                 # Sample data files
-│   ├── sample_data.csv
 │   └── sample_data.jsonl
 └── output/               # Generated XML files (gitignored)
     └── .gitkeep
@@ -67,7 +66,7 @@ writer.write_complete_xml(data, 'user')
 cd examples
 ruby simple_example.rb
 
-# Try practical conversions (CSV, JSONL, database simulation)
+# Try practical conversions (JSONL, database simulation)
 ruby practical_example.rb
 
 # Run performance benchmarks
@@ -95,7 +94,6 @@ ruby quick_usage.rb
 ### Flexible Input
 - Ruby arrays of hashes
 - Enumerators (most memory-efficient)
-- CSV files
 - JSONL (JSON Lines) files
 - Database cursors with find_in_batches
 - Any iterable data source
@@ -112,7 +110,7 @@ The library is organized into logical subfolders for better code organization:
 - `batch_xml_writer.rb` - Batch processing with GC
 
 **`lib/utilities/`** - Helper utilities
-- `practical_xml_converter.rb` - Convert CSV, JSONL, arrays to XML
+- `practical_xml_converter.rb` - Convert JSONL, arrays to XML
 - `xml_validator.rb` - Validate XML files
 
 **`lib/benchmarks/`** - Performance testing
@@ -176,7 +174,6 @@ Helper class for converting different data formats to XML.
 **Location:** `lib/utilities/practical_xml_converter.rb`
 
 **Methods:**
-- `csv_to_xml(csv_file, xml_file, headers: true)` - Convert CSV files to XML
 - `jsonl_to_xml(jsonl_file, xml_file)` - Convert JSONL files to XML
 - `simulate_database_to_xml(xml_file, total_records, batch_size)` - Database batch export
 - `array_to_xml_chunked(array, xml_file, chunk_size)` - Process large arrays in chunks
@@ -185,7 +182,7 @@ Helper class for converting different data formats to XML.
 ```ruby
 require_relative 'lib/utilities/practical_xml_converter'
 
-PracticalXMLConverter.csv_to_xml('data.csv', 'output/data.xml')
+PracticalXMLConverter.jsonl_to_xml('data.jsonl', 'output/data.xml')
 ```
 
 #### `XMLValidator`
@@ -264,16 +261,17 @@ writer.finish_document
 
 #### Pattern 3: Processing Files
 
-Convert CSV or JSONL files to XML.
+Convert JSONL files to XML.
 
 ```ruby
-require 'csv'
+require 'json'
 
-writer = MemoryEfficientXMLWriter.new('output/from_csv.xml', 'records')
+writer = MemoryEfficientXMLWriter.new('output/from_jsonl.xml', 'records')
 writer.start_document
 
-CSV.foreach('data.csv', headers: true) do |row|
-  writer.write_hash(row.to_h, 'record')
+File.foreach('data.jsonl') do |line|
+  record = JSON.parse(line.strip)
+  writer.write_hash(record, 'record')
 end
 
 writer.finish_document
@@ -533,12 +531,11 @@ writer.finish_document
 
 - **`examples/simple_example.rb`** - Start here for basic usage
 - **`examples/quick_usage.rb`** - Common scenarios and patterns
-- **`examples/practical_example.rb`** - Real-world conversions (CSV, JSONL, DB)
+- **`examples/practical_example.rb`** - Real-world conversions (JSONL, DB)
 - **`examples/benchmark.rb`** - Performance testing and optimization
 
 ### Sample Data
 
-- **`data/sample_data.csv`** - Example CSV file
 - **`data/sample_data.jsonl`** - Example JSONL file
 
 ## 🎓 Learning Path
@@ -575,7 +572,6 @@ writer.finish_writing
 require_relative 'lib/utilities/practical_xml_converter'
 
 # Convert files
-PracticalXMLConverter.csv_to_xml('input.csv', 'output.xml')
 PracticalXMLConverter.jsonl_to_xml('input.jsonl', 'output.xml')
 ```
 

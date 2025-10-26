@@ -27,7 +27,7 @@ lib/
 │   ├── bulk_xml_writer.rb             # Bulk writer (comparison)
 │   └── batch_xml_writer.rb            # Batch processing with GC
 ├── utilities/                         # Helper utilities
-│   ├── practical_xml_converter.rb     # Format converters (CSV, JSONL, DB)
+│   ├── practical_xml_converter.rb     # Format converters (JSONL, DB)
 │   └── xml_validator.rb               # XML validation
 ├── benchmarks/                        # Performance testing
 │   ├── xml_writer_benchmark.rb        # Benchmark framework
@@ -61,7 +61,7 @@ lib/
 **Count:** 2 files
 
 **Files:**
-- `practical_xml_converter.rb` - Convert CSV, JSONL, arrays to XML
+- `practical_xml_converter.rb` - Convert JSONL, arrays to XML
 - `xml_validator.rb` - Validate XML file structure
 
 **When to use:**
@@ -129,7 +129,7 @@ require_relative 'lib/xml_writers'
 
 ### 2. **Better Discoverability**
 - "I need a writer" → Look in `writers/`
-- "I need to convert CSV" → Look in `utilities/`
+- "I need to convert data" → Look in `utilities/`
 - "I need to benchmark" → Look in `benchmarks/`
 
 ### 3. **Scalability**
@@ -177,7 +177,6 @@ All examples completed successfully!
 ✅ **practical_example.rb**
 ```bash
 $ ruby examples/practical_example.rb
-✓ CSV conversion complete
 ✓ JSONL conversion complete
 ✓ Database export complete
 ✓ Array conversion complete
@@ -212,7 +211,7 @@ writer = MemoryEfficientXMLWriter.new('output.xml')
 
 # Load a utility
 require_relative 'lib/utilities/practical_xml_converter'
-PracticalXMLConverter.csv_to_xml('data.csv', 'output.xml')
+PracticalXMLConverter.jsonl_to_xml('data.jsonl', 'output.xml')
 
 # Load a benchmark
 require_relative 'lib/benchmarks/xml_writer_benchmark'
@@ -226,7 +225,7 @@ require_relative 'lib/xml_writers'
 
 # Now use any class
 writer = MemoryEfficientXMLWriter.new('output.xml')
-PracticalXMLConverter.csv_to_xml('data.csv', 'output.xml')
+PracticalXMLConverter.jsonl_to_xml('data.jsonl', 'output.xml')
 XMLValidator.validate_xml_file('output.xml')
 benchmark = XMLWriterBenchmark.new
 ```
