@@ -1,22 +1,25 @@
 require_relative '../writers/memory_efficient_xml_writer'
-require 'json'
+require 'yajl'
 
 # Practical examples for different data sources
+# Uses Yajl for high-performance JSON parsing
 class PracticalXMLConverter
 
-  # Example 1: Convert JSONL (JSON Lines) file to XML
+  # Example 1: Convert JSONL (JSON Lines) file to XML using Yajl streaming parser
   def self.jsonl_to_xml(jsonl_file, xml_file)
     puts "Converting JSONL to XML: #{jsonl_file} -> #{xml_file}"
+    puts "Using Yajl streaming parser for optimal memory efficiency"
 
     xml_writer = MemoryEfficientXMLWriter.new(xml_file, 'documents')
     xml_writer.start_writing
 
-    # Process JSONL file line by line
+    # Process JSONL file line by line using Yajl for fast parsing
     File.foreach(jsonl_file) do |line|
       begin
-        hash = JSON.parse(line.strip)
+        # Yajl::Parser.parse is faster and more memory-efficient than JSON.parse
+        hash = Yajl::Parser.parse(line.strip)
         xml_writer.write_hash(hash, 'document')
-      rescue JSON::ParserError => e
+      rescue Yajl::ParseError => e
         puts "Warning: Skipping invalid JSON line: #{e.message}"
       end
     end

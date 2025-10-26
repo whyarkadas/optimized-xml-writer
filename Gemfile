@@ -5,6 +5,7 @@ source "https://rubygems.org"
 ruby ">= 2.7.0"
 
 gem "nokogiri", "~> 1.15"
+gem "yajl-ruby", "~> 1.4", require: 'yajl'
 
 group :development, :test do
   gem "rspec", "~> 3.12"

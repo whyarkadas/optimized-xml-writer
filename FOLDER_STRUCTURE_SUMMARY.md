@@ -157,22 +157,12 @@ require_relative 'lib/xml_writers'
 ✅ **lib/utilities/practical_xml_converter.rb** - Updated internal require  
 ✅ **examples/benchmark.rb** - Updated require paths  
 ✅ **examples/practical_example.rb** - Updated require paths  
-✅ **examples/simple_example.rb** - Updated require path  
-✅ **examples/quick_usage.rb** - Updated require path  
 ✅ **README.md** - Updated all documentation and examples  
 ✅ **ARCHITECTURE.md** - Updated all file paths and examples
 
 ### Testing Results
 All functionality verified after reorganization:
 
-✅ **simple_example.rb**
-```bash
-$ ruby examples/simple_example.rb
-✓ Successfully created output/huge_dataset.xml
-File size: 4463041 bytes (4.26 MB)
-✓ Successfully created business_data.xml
-All examples completed successfully!
-```
 
 ✅ **practical_example.rb**
 ```bash

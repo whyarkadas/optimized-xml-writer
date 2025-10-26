@@ -18,14 +18,11 @@ examples/
 │   └── Main execution code
 │   (Classes mixed with example code)
 │
-├── practical_example.rb
-│   ├── PracticalXMLConverter class (130 lines)
-│   ├── XMLValidator class (57 lines)
-│   └── Main execution code
-│   (Classes mixed with example code)
-│
-└── simple_example.rb
-    └── Example code only
+└── practical_example.rb
+    ├── PracticalXMLConverter class (130 lines)
+    ├── XMLValidator class (57 lines)
+    └── Main execution code
+    (Classes mixed with example code)
 ```
 
 **Problems:**
@@ -56,8 +53,6 @@ lib/
 examples/
 ├── benchmark.rb                       ← Clean, just runs code
 ├── practical_example.rb               ← Clean, just runs code
-├── quick_usage.rb                     ← Clean example
-└── simple_example.rb                  ← Clean example
 ```
 
 **Benefits:**

@@ -15,3 +15,4 @@ require_relative 'utilities/xml_validator'
 # Benchmarks - Performance testing and demonstrations
 require_relative 'benchmarks/xml_writer_benchmark'
 require_relative 'benchmarks/memory_usage_demo'
+require_relative 'benchmarks/json_xml_benchmark'
