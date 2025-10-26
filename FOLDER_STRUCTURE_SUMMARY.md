@@ -11,7 +11,7 @@ lib/
 ├── memory_efficient_xml_writer.rb
 ├── bulk_xml_writer.rb
 ├── batch_xml_writer.rb
-├── rexml_streaming_writer.rb
+├── nokogiri_streaming_writer.rb
 ├── xml_writer_benchmark.rb
 ├── memory_usage_demo.rb
 ├── practical_xml_converter.rb
@@ -27,7 +27,7 @@ lib/
 │   ├── memory_efficient_xml_writer.rb  # Main streaming writer
 │   ├── bulk_xml_writer.rb             # Bulk writer (comparison)
 │   ├── batch_xml_writer.rb            # Batch processing with GC
-│   └── rexml_streaming_writer.rb      # REXML alternative
+│   └── nokogiri_streaming_writer.rb   # Nokogiri with enhanced formatting
 ├── utilities/                         # Helper utilities
 │   ├── practical_xml_converter.rb     # Format converters (CSV, JSONL, DB)
 │   └── xml_validator.rb               # XML validation
@@ -49,7 +49,9 @@ lib/
 - `memory_efficient_xml_writer.rb` - Main production writer (streaming)
 - `bulk_xml_writer.rb` - Traditional approach (for comparison)
 - `batch_xml_writer.rb` - Extended streaming with batch processing
-- `rexml_streaming_writer.rb` - REXML-based alternative
+- `nokogiri_streaming_writer.rb` - Nokogiri-based with enhanced formatting
+
+**Note:** All writers use Nokogiri for XML generation
 
 **When to use:**
 - Need to write XML files

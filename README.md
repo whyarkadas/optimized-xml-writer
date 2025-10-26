@@ -16,7 +16,7 @@ memory-opt/
 │   │   ├── memory_efficient_xml_writer.rb  # Main streaming writer
 │   │   ├── bulk_xml_writer.rb             # Bulk writer (for comparison)
 │   │   ├── batch_xml_writer.rb            # Batch writer with GC
-│   │   └── rexml_streaming_writer.rb      # REXML alternative
+│   │   └── nokogiri_streaming_writer.rb   # Nokogiri with enhanced formatting
 │   ├── utilities/        # Helper utilities
 │   │   ├── practical_xml_converter.rb     # Format converters
 │   │   └── xml_validator.rb               # XML validation
@@ -107,11 +107,11 @@ ruby quick_usage.rb
 
 The library is organized into logical subfolders for better code organization:
 
-**`lib/writers/`** - Core XML writer implementations
+**`lib/writers/`** - Core XML writer implementations (all use Nokogiri)
 - `memory_efficient_xml_writer.rb` - Main streaming writer (⭐ **recommended**)
 - `bulk_xml_writer.rb` - Traditional approach (for comparison)
 - `batch_xml_writer.rb` - Batch processing with GC
-- `rexml_streaming_writer.rb` - REXML-based alternative
+- `nokogiri_streaming_writer.rb` - Nokogiri with enhanced formatting
 
 **`lib/utilities/`** - Helper utilities
 - `practical_xml_converter.rb` - Convert CSV, JSONL, arrays to XML
@@ -518,8 +518,8 @@ writer.finish_document
 ## 📝 Requirements
 
 - **Ruby**: 2.7.0 or higher
-- **Dependencies**: None required (uses built-in libraries)
-- **Optional**: `nokogiri` gem for XML validation in examples
+- **Dependencies**: `nokogiri` gem (required for XML generation)
+- **Installation**: `gem install nokogiri` or use `bundle install`
 
 ## 📚 Additional Resources
 

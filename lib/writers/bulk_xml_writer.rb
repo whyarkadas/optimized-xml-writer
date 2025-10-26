@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 
+require 'nokogiri'
+
 # Traditional bulk writer - loads everything into memory before writing
 # This is ONLY for benchmark comparison purposes
 # DO NOT use this for production - use MemoryEfficientXMLWriter instead!
+# Uses Nokogiri for XML generation
 class BulkXMLWriter
   def initialize(file_path, root_element_name = 'data')
     @file_path = file_path
@@ -24,58 +27,44 @@ class BulkXMLWriter
   end
 
   def finish_writing
-    # Write everything at once at the end
-    File.open(@file_path, 'w') do |file|
-      file.write('<?xml version="1.0" encoding="UTF-8"?>')
-      file.write("\n<#{@root_element_name}>\n")
-
-      @records.each do |record|
-        xml_string = hash_to_xml_string(record[:hash], record[:element_name], 1)
-        file.write(xml_string)
+    # Write everything at once at the end using Nokogiri
+    builder = Nokogiri::XML::Builder.new(encoding: 'UTF-8') do |xml|
+      xml.send(@root_element_name.to_sym) do
+        @records.each do |record|
+          build_element(xml, record[:element_name], record[:hash])
+        end
       end
-
-      file.write("</#{@root_element_name}>\n")
     end
 
+    File.write(@file_path, builder.to_xml)
     @records.clear
   end
 
   private
 
-  def hash_to_xml_string(hash, element_name, indent_level = 0)
-    indent = '  ' * indent_level
-    lines = ["#{indent}<#{element_name}>"]
-
-    hash.each do |key, value|
-      case value
-      when Hash
-        lines << hash_to_xml_string(value, escape_xml_name(key.to_s), indent_level + 1)
-      when Array
-        value.each do |item|
-          if item.is_a?(Hash)
-            lines << hash_to_xml_string(item, escape_xml_name(key.to_s), indent_level + 1)
-          else
-            lines << "#{indent}  <#{escape_xml_name(key.to_s)}>#{escape_xml_content(item.to_s)}</#{escape_xml_name(key.to_s)}>"
-          end
+  # Build XML element using Nokogiri's builder (same as MemoryEfficientXMLWriter)
+  def build_element(xml, element_name, content)
+    case content
+    when Hash
+      xml.send(sanitize_element_name(element_name)) do
+        content.each do |key, value|
+          build_element(xml, key.to_s, value)
         end
-      else
-        lines << "#{indent}  <#{escape_xml_name(key.to_s)}>#{escape_xml_content(value.to_s)}</#{escape_xml_name(key.to_s)}>"
       end
+    when Array
+      content.each do |item|
+        build_element(xml, element_name, item)
+      end
+    else
+      xml.send(sanitize_element_name(element_name), content.to_s)
     end
-
-    lines << "#{indent}</#{element_name}>"
-    lines.join("\n") + "\n"
   end
 
-  def escape_xml_name(name)
-    name.gsub(/[^a-zA-Z0-9_-]/, '_').gsub(/^[^a-zA-Z_]/, '_')
-  end
-
-  def escape_xml_content(content)
-    content.gsub('&', '&amp;')
-           .gsub('<', '&lt;')
-           .gsub('>', '&gt;')
-           .gsub('"', '&quot;')
-           .gsub("'", '&apos;')
+  # Sanitize XML element names to be valid
+  def sanitize_element_name(name)
+    # Ensure element name starts with letter or underscore
+    sanitized = name.to_s.gsub(/[^a-zA-Z0-9_-]/, '_')
+    sanitized = "_#{sanitized}" if sanitized =~ /^[^a-zA-Z_]/
+    sanitized
   end
 end

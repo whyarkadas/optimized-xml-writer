@@ -3,11 +3,11 @@
 # Main loader file for all XML writer classes and utilities
 # Require this file to get access to all implementations
 
-# Writers - Core XML writing implementations
+# Writers - Core XML writing implementations (all using Nokogiri)
 require_relative 'writers/memory_efficient_xml_writer'
 require_relative 'writers/bulk_xml_writer'
 require_relative 'writers/batch_xml_writer'
-require_relative 'writers/rexml_streaming_writer'
+require_relative 'writers/nokogiri_streaming_writer'
 
 # Utilities - Helper classes for conversion and validation
 require_relative 'utilities/practical_xml_converter'

@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
+require 'nokogiri'
+
 # Memory-efficient XML writer that streams data directly to file
 # without loading entire dataset into memory
+# Uses Nokogiri for XML generation and validation
 class MemoryEfficientXMLWriter
   def initialize(file_path, root_element_name = 'data')
     @file_path = file_path
@@ -16,13 +19,20 @@ class MemoryEfficientXMLWriter
     @file.write("\n<#{@root_element_name}>\n")
   end
 
-  # Write a single hash as XML element
+  # Write a single hash as XML element using Nokogiri
   def write_hash(hash, element_name = 'item')
     return unless @file
 
-    @file.write("  <#{element_name}>\n")
-    write_hash_content(hash, 2)
-    @file.write("  </#{element_name}>\n")
+    # Create XML element using Nokogiri
+    builder = Nokogiri::XML::Builder.new do |xml|
+      build_element(xml, element_name, hash)
+    end
+
+    # Extract just the element (without XML declaration)
+    doc = Nokogiri::XML(builder.to_xml)
+    element_xml = doc.root.to_xml(indent: 2)
+
+    @file.write("  #{element_xml}\n")
     @file.flush # Ensure data is written to disk immediately
   end
 
@@ -58,43 +68,29 @@ class MemoryEfficientXMLWriter
 
   private
 
-  # Recursively write hash content with proper indentation
-  def write_hash_content(hash, indent_level = 0)
-    indent = '  ' * indent_level
-
-    hash.each do |key, value|
-      case value
-      when Hash
-        @file.write("#{indent}<#{escape_xml_name(key)}>\n")
-        write_hash_content(value, indent_level + 1)
-        @file.write("#{indent}</#{escape_xml_name(key)}>\n")
-      when Array
-        value.each do |item|
-          if item.is_a?(Hash)
-            @file.write("#{indent}<#{escape_xml_name(key)}>\n")
-            write_hash_content(item, indent_level + 1)
-            @file.write("#{indent}</#{escape_xml_name(key)}>\n")
-          else
-            @file.write("#{indent}<#{escape_xml_name(key)}>#{escape_xml_content(item.to_s)}</#{escape_xml_name(key)}>\n")
-          end
+  # Build XML element using Nokogiri's builder
+  def build_element(xml, element_name, content)
+    case content
+    when Hash
+      xml.send(sanitize_element_name(element_name)) do
+        content.each do |key, value|
+          build_element(xml, key.to_s, value)
         end
-      else
-        @file.write("#{indent}<#{escape_xml_name(key)}>#{escape_xml_content(value.to_s)}</#{escape_xml_name(key)}>\n")
       end
+    when Array
+      content.each do |item|
+        build_element(xml, element_name, item)
+      end
+    else
+      xml.send(sanitize_element_name(element_name), content.to_s)
     end
   end
 
-  # Escape XML element names (replace invalid characters)
-  def escape_xml_name(name)
-    name.to_s.gsub(/[^a-zA-Z0-9_-]/, '_')
-  end
-
-  # Escape XML content
-  def escape_xml_content(content)
-    content.gsub('&', '&amp;')
-           .gsub('<', '&lt;')
-           .gsub('>', '&gt;')
-           .gsub('"', '&quot;')
-           .gsub("'", '&apos;')
+  # Sanitize XML element names to be valid
+  def sanitize_element_name(name)
+    # Ensure element name starts with letter or underscore
+    sanitized = name.to_s.gsub(/[^a-zA-Z0-9_-]/, '_')
+    sanitized = "_#{sanitized}" if sanitized =~ /^[^a-zA-Z_]/
+    sanitized
   end
 end
